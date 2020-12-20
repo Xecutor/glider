@@ -39,7 +39,7 @@ void Text::prepare(bool rawText)
 {
   linesCount=1;
   linesStart.clear();
-  int len=str.getLength();
+  size_t len=str.getLength();
   if(len==0)
   {
     return;
@@ -64,18 +64,18 @@ void Text::prepare(bool rawText)
   //int asc=fnt->getAscent();
   float x=0.0,y=0.0;
   int lineWidth=0;
-  int lastWordEndOff=0;
-  int lastWordEndIdx=0;
-  int lastWordEndSymIdx=0;
+  size_t lastWordEndOff=0;
+  size_t lastWordEndIdx=0;
+  size_t lastWordEndSymIdx=0;
   bool lastGlyphNonSpace=false;
   bool wasNewLine=false;
   bool haveWordOnLine=false;
   Color curClr=clr;
   Color lastClr;
   bool colorActive=false;
-  int symIdx=0;
+  size_t symIdx=0;
   width=0;
-  for(int i=0;i<str.getSize();++symIdx)
+  for(size_t i=0;i<str.getSize();++symIdx)
   {
     ushort c=str.getNext(i);
     if(c=='\n')
@@ -224,10 +224,10 @@ void Text::prepare(bool rawText)
   }
   height=(int)(y+fh);
   vb.update();
-  vb.setSize(len*4);
+  vb.setSize(static_cast<int>(len*4));
 }
 
-void Text::getLetterExtent(int idx,Pos& argPos,Pos& argSize)
+void Text::getLetterExtent(size_t idx,Pos& argPos,Pos& argSize)
 {
   if(!str.getLength())
   {
@@ -244,7 +244,7 @@ void Text::getLetterExtent(int idx,Pos& argPos,Pos& argSize)
   VxVector& v=vb.getVBuf();
   argPos=v[idx*4];
   argSize=v[idx*4+2]-argPos;
-  int off=str.getLetterOffset(idx);
+  size_t off=str.getLetterOffset(idx);
   ushort sym=str.getNext(off);
   GlyphInfo gi=fnt->getGlyph(sym);
   //argPos.x-=gi.minx?1:0;
@@ -255,14 +255,14 @@ void Text::getLetterExtent(int idx,Pos& argPos,Pos& argSize)
 void Text::updateColors(const ClrVector& clrs,int from,int to)
 {
   ClrVector& cbuf=vb.getCBuf();
-  if(to==-1)to=clrs.size();
+  if(to==-1)to=static_cast<int>(clrs.size());
   if(from>=(int)cbuf.size() || to<=from)
   {
     return;
   }
   if(to>(int)cbuf.size() || to<0)
   {
-    to=cbuf.size();
+    to=static_cast<int>(cbuf.size());
   }
   ClrVector::iterator it=vb.getCBuf().begin()+from,end=vb.getCBuf().begin()+to;
   ClrVector::const_iterator cit=clrs.begin(),cend=clrs.end();

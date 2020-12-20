@@ -82,8 +82,8 @@ typedef std::vector<Row> Matrix;
 
 
 
-int px;
-int py;
+size_t px;
+size_t py;
 int sightRadius=15;
 VertexBuffer* vb;
 Line* lsa;
@@ -92,13 +92,13 @@ Text* info;
 
 void drawMap(Matrix& m)
 {
-  int H=m.size();
-  int W=m[0].size();
+  size_t H=m.size();
+  size_t W=m[0].size();
   Color clr;
   ClrVector& c=vb->getCBuf();
-  for(int y=0;y<H;++y)
+  for(size_t y=0;y<H;++y)
   {
-    for(int x=0;x<W;++x)
+    for(size_t x=0;x<W;++x)
     {
       if(m[y][x].ti.block)clr=Color::white;else clr=Color::blue;
       if(x==px && y==py)clr=Color::red;
@@ -114,7 +114,7 @@ void drawMap(Matrix& m)
       {
         clr=clr/2;
       }
-      for(int i=0;i<4;++i)
+      for(size_t i=0;i<4;++i)
       {
         c[(x+y*W)*4+i]=clr;
       }
@@ -159,11 +159,11 @@ struct MapAdapter{
   {
     return x>=0 && x<getWidth() && y>=0 && y<getHeight();
   }
-  int getWidth()
+  size_t getWidth()
   {
     return m[0].size();
   }
-  int getHeight()
+  size_t getHeight()
   {
     return m.size();
   }
@@ -236,8 +236,8 @@ public:
       int y=argEvent.y/CELL_SIZE;
       if(x!=px || y!=py)
       {
-        int dx=x-px;
-        int dy=y-py;
+        int dx=static_cast<int>(x-px);
+        int dy=static_cast<int>(y-py);
 
         int a=AngleRange::getAngle(dx,dy);
         dr.sa=AngleRange::addNorm(a,viewAngle);
@@ -289,8 +289,8 @@ public:
     }
     if(argEvent.eventType==ketPress)
     {
-      int ox=px;
-      int oy=py;
+      auto ox=px;
+      auto oy=py;
       if(argEvent.keySym==keyboard::GK_UP || argEvent.keySym==keyboard::GK_W)py--;
       if(argEvent.keySym==keyboard::GK_DOWN || argEvent.keySym==keyboard::GK_S)py++;
       if(argEvent.keySym==keyboard::GK_LEFT || argEvent.keySym==keyboard::GK_A)px--;
@@ -334,7 +334,7 @@ public:
         for(int i=0;i<1000;++i)
         {
           ma.clearVis();
-          cf.generateFov(ma,Posi<int>(px,py),sightRadius);
+          cf.generateFov(ma,Posi<int>(static_cast<int>(px),static_cast<int>(py)),sightRadius);
         }
         //cf.debug=true;
         uint32_t duration=SDL_GetTicks()-start;
@@ -353,7 +353,7 @@ public:
     {
       cf.clearPermBlock();
     }
-    cf.generateFov(ma,Posi<int>(px,py),sightRadius);
+    cf.generateFov(ma,Posi<int>(static_cast<int>(px),static_cast<int>(py)),sightRadius);
     drawMap(m);
   }
   void onResize(){};
@@ -425,12 +425,12 @@ int GliderAppMain(int argc,char* argv[])
     }
     ++y;
   }
-  int W=m[0].size();
-  int H=m.size();
+  size_t W=m[0].size();
+  size_t H=m.size();
   int cornAngle=60;
-  for(int y=0;y<H;++y)
+  for(size_t y=0;y<H;++y)
   {
-    for(int x=0;x<W;++x)
+    for(size_t x=0;x<W;++x)
     {
       if(m[y][x].ti.block)
       {
@@ -492,7 +492,7 @@ int GliderAppMain(int argc,char* argv[])
   cf.prepare(sightRadius);
   MapAdapter ma(m);
   ma.clearVis();
-  cf.generateFov(ma,Posi<int>(px,py),sightRadius);
+  cf.generateFov(ma,Posi<int>(static_cast<int>(px),static_cast<int>(py)),sightRadius);
   drawMap(m);
   sc.addObject(vb);
   //sc.addObject(lsa);

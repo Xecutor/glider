@@ -67,7 +67,7 @@ public:
     int w=0;
     UString us(line,strlen(line));
     ushort c;
-    int pos=0;
+    size_t pos=0;
     while((c=us.getNext(pos)))
     {
       w+=(int)getGlyph(c).adv;

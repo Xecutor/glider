@@ -80,23 +80,23 @@ protected:
   ClrVector cbuf;
   bool tenabled,cenabled;
   uint vbo;
-  int vbosize;
-  int size;
+  size_t vbosize;
+  size_t size;
   bool autoSize;
   bool needIdent;
   Primitive primitive;
-  int vbufSize(int cnt=-1)
+  size_t vbufSize(int cnt=-1)
   {
-    return (cnt==-1?vbuf.size():cnt)*sizeof(vbuf[0]);
+    return static_cast<size_t>((cnt==-1?vbuf.size():cnt)*sizeof(vbuf[0]));
   }
-  int tbufSize(int cnt=-1)
+  size_t tbufSize(int cnt=-1)
   {
-    return (cnt==-1?tbuf.size():cnt)*sizeof(tbuf[0]);
+    return static_cast<size_t>((cnt==-1?tbuf.size():cnt)*sizeof(tbuf[0]));
   }
 
-  int cbufSize(int cnt=-1)
+  size_t cbufSize(int cnt=-1)
   {
-    return (cnt==-1?cbuf.size():cnt)*sizeof(cbuf[0]);
+    return static_cast<size_t>((cnt==-1?cbuf.size():cnt)*sizeof(cbuf[0]));
   }
 
 };

@@ -180,7 +180,7 @@ public:
   void prepare(int maxRadius)
   {
     if(fov.empty())fov.push_back(Ring());
-    for(int r=fov.size();r<=maxRadius;++r)
+    for(size_t r=fov.size();r<=maxRadius;++r)
     {
       fov.push_back(Ring());
       Ring& ring=fov.back();

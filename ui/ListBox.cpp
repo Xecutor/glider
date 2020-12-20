@@ -66,8 +66,7 @@ void ListBox::onObjectResizeEnd()
 
 void ListBox::onClear()
 {
-  setSelItem(objLst.end());
-  topItem=objLst.end();
+  setSelItem(topItem=objLst.end());
 }
 
 void ListBox::onAddObject()

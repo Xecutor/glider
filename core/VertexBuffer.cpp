@@ -63,7 +63,7 @@ void VertexBuffer::draw()
     case pQuadStrip:p=GL_QUAD_STRIP;break;
     case pPolygon:p=GL_POLYGON;break;
   }
-  GLCHK(glDrawArrays(p,0,size));
+  GLCHK(glDrawArrays(p,0,static_cast<GLsizei>(size)));
   if(cenabled)
   {
     GLCHK(glDisableClientState(GL_COLOR_ARRAY));
@@ -80,14 +80,14 @@ void VertexBuffer::draw()
 
 void VertexBuffer::update(int updateFlags,int from,int to)
 {
-  int newvbosize=vbufSize()+(tenabled?tbufSize():0)+(cenabled?cbufSize():0);
+  size_t newvbosize=vbufSize()+(tenabled?tbufSize():0)+(cenabled?cbufSize():0);
 
-  int mx=vbuf.size();
-  if(tenabled && (int)tbuf.size()<mx)
+  size_t mx=vbuf.size();
+  if(tenabled && tbuf.size()<mx)
   {
     mx=tbuf.size();
   }
-  if(cenabled && (int)cbuf.size()<mx)
+  if(cenabled && cbuf.size()<mx)
   {
     mx=cbuf.size();
   }
@@ -97,7 +97,7 @@ void VertexBuffer::update(int updateFlags,int from,int to)
   }
   if(to==-1 || to>mx)
   {
-    to=mx;
+    to=static_cast<int>(mx);
   }
   if(size!=mx && autoSize)
   {
@@ -106,7 +106,7 @@ void VertexBuffer::update(int updateFlags,int from,int to)
 
   if(size==0)return;
 
-  if(newvbosize>vbosize)
+  if(newvbosize!=vbosize)
   {
     if(vbo)
     {
@@ -124,7 +124,7 @@ void VertexBuffer::update(int updateFlags,int from,int to)
   {
     GLCHK(glBufferSubData(GL_ARRAY_BUFFER, vbufSize(from),vbufSize(to-from), &vbuf[from]));
   }
-  int offset=vbufSize();
+  size_t offset=vbufSize();
   if(tenabled)
   {
     if(updateFlags&ufTexture)

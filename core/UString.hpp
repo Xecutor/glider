@@ -8,20 +8,20 @@ namespace glider{
 class UString{
 public:
   UString():str(0),bytes(0),capacity(0),symbols(0),modified(false){}
-  UString(const char* argStr,int argLength);
+  UString(const char* argStr,size_t argLength);
   UString(const UString& argStr);
   ~UString();
   UString& operator+=(const UString& rhs);
   UString& operator=(const char* argStr);
-  ushort getNext(int& pos)const;
-  static int getNextPos(const char* argStr,int pos);
-  static ushort getNextSymbol(const char* argStr,int& pos);
-  static int calcLength(const char* str,int bytes);
-  int getSize()const
+  ushort getNext(size_t& pos)const;
+  static size_t getNextPos(const char* argStr,size_t pos);
+  static ushort getNextSymbol(const char* argStr,size_t& pos);
+  static size_t calcLength(const char* str,size_t bytes);
+  size_t getSize()const
   {
     return bytes;
   }
-  int getLength()const
+  size_t getLength()const
   {
     if(modified)
     {
@@ -35,16 +35,16 @@ public:
     return bytes==0;
   }
 
-  int getLetterOffset(int idx)const;
+  size_t getLetterOffset(size_t idx)const;
 
-  static int ucs2ToUtf8(ushort symbol,char* buf);
+  static size_t ucs2ToUtf8(ushort symbol,char* buf);
 
 protected:
   char* str;
-  int bytes;
-  int capacity;
-  mutable int symbols;
-  mutable bool modified;
+  size_t bytes;
+  size_t capacity;
+  mutable size_t symbols;
+  mutable size_t modified;
 
   void updateLength()const;
 };

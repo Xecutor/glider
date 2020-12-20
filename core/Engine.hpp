@@ -62,9 +62,9 @@ public:
 
   void setFpsLimit(int argTargetFps)
   {
+    setVSync(false);
     if(argTargetFps>=0)
     {
-      setVSync(false);
       targetFps=argTargetFps;
       limitFps=true;
     }else

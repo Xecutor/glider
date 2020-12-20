@@ -115,7 +115,7 @@ struct Pos{
   }
   float length()const
   {
-    return sqrt(x*x+y*y);
+    return static_cast<float>(sqrt(x*x+y*y));
   }
   void select();
   void selectTex();
@@ -329,6 +329,21 @@ struct Recti{
   {
     return pos+size-Posi<T>(1,1);
   }
+  void ClampBy(const Recti<T>& other) {
+    auto otherBr = other.br();
+    if(pos.x<other.pos.x) {
+      pos.x = other.pos.x;
+    }
+    if(pos.x+size.x>otherBr.x) {
+      size.x = otherBr.x - pos.x;
+    }
+    if(pos.y<other.pos.y) {
+      pos.y = other.pos.y;
+    }
+    if(pos.y+size.y>otherBr.y) {
+      size.y = otherBr.y - pos.y;
+    }
+  }
   void pushQuad(std::vector<Posi<T> >& v)
   {
     v.push_back(tl());
@@ -416,7 +431,7 @@ struct Linei{
         dy=-dy;
       }
       sy = pos.y < end.y ? 1 : -1;
-      err = dx + dy;//, e2; /* error value e_xy */
+      err = dx + dy, e2; /* error value e_xy */
       endReached=dx==0 && dy==0;
     }
     void step()

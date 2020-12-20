@@ -31,7 +31,7 @@ EditInput::EditInput(const char* argName)
   selecting=false;
   scrollTimer=0;
   scrollDir=0;
-  selStart=selEnd=-1;
+  resetSelection();
 }
 
 void EditInput::onFocusGain()
@@ -61,7 +61,7 @@ void EditInput::onKeyDown(const KeyboardEvent& ke)
   bool shift=(ke.keyMod&keyboard::GK_MOD_SHIFT)!=0;
   if(ke.keySym==keyboard::GK_LEFT)
   {
-    setCurPos(curPos-1,shift);
+    setCurPos(curPos > 0 ? curPos-1 : 0,shift);
   }
   if(ke.keySym==keyboard::GK_RIGHT)
   {
@@ -109,8 +109,8 @@ void EditInput::deleteSymbol(int dir)
 {
   if(curPos+dir>=0 && curPos+dir<text.getTextLength())
   {
-    int idx=text.getUString().getLetterOffset(curPos+dir);
-    int start=idx;
+    size_t idx=text.getUString().getLetterOffset(curPos+dir);
+    size_t start=idx;
     text.getUString().getNext(idx);
     value.erase(start,idx-start);
     text.setText(value.c_str(),true);
@@ -123,14 +123,14 @@ void EditInput::insertText(const char* txt)
 {
   if(haveSelection())
   {
-    int idx1=text.getUString().getLetterOffset(selStart);
-    int idx2=text.getUString().getLetterOffset(selEnd);
+    size_t idx1=text.getUString().getLetterOffset(selStart);
+    size_t idx2=text.getUString().getLetterOffset(selEnd);
     value.erase(idx1,idx2-idx1);
     setCurPos(selStart) ;
     resetSelection();
   }
-  int idx=curPos;
-  if(idx>0)
+  size_t idx=curPos;
+  if(curPos>0)
   {
     idx=text.getUString().getLetterOffset(curPos);
   }
@@ -140,19 +140,19 @@ void EditInput::insertText(const char* txt)
   if(eiCb[eiOnModify])eiCb[eiOnModify](UIEvent(this,eiOnModify));
 }
 
-void EditInput::setCurPos(int argCurPos,bool extendSelection)
+void EditInput::setCurPos(size_t argCurPos,bool extendSelection)
 {
-  int oldCurPos=curPos;
+  size_t oldCurPos=curPos;
   if(!extendSelection)
   {
-    selStart=selEnd=-1;
+    resetSelection();
   }
   curPos=argCurPos;
   if(curPos<0)
   {
     curPos=0;
   }
-  int tl=text.getTextLength();
+  size_t tl=text.getTextLength();
   if(curPos>tl)
   {
     curPos=tl;
@@ -169,7 +169,7 @@ void EditInput::setCurPos(int argCurPos,bool extendSelection)
     }
     return;
   }
-  int idx=curPos;
+  size_t idx=curPos;
   bool atEnd=false;
   if(tl>0 && curPos==tl)
   {
@@ -195,7 +195,7 @@ void EditInput::setCurPos(int argCurPos,bool extendSelection)
 
   if(extendSelection && oldCurPos!=curPos)
   {
-    if(selStart==-1)
+    if(!haveSelection())
     {
       if(oldCurPos<curPos)
       {
@@ -217,11 +217,9 @@ void EditInput::setCurPos(int argCurPos,bool extendSelection)
     }
     if(selEnd<selStart)
     {
-      int tmp=selEnd;
-      selEnd=selStart;
-      selStart=tmp;
+      std::swap(selStart, selEnd);
     }
-    if(selStart!=selEnd)
+    if(haveSelection())
     {
       Pos sPos,sSize;
       text.getLetterExtent(selStart,sPos,sSize);
@@ -265,12 +263,12 @@ void EditInput::setValue(const std::string& argValue)
 
 void EditInput::resetSelection()
 {
-  selStart=selEnd=-1;
+  selStart=selEnd=0;
 }
 
 int EditInput::mouseXToCurPos(int x)
 {
-  int tl=text.getTextLength();
+  int tl=static_cast<int>(text.getTextLength());
   x=x-(int)getAbsPos().x-(int)text.getPosition().x+hShift;
   //printf("x=%d\n",x);
   int x0=0;

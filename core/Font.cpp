@@ -231,7 +231,7 @@ bool Font::prepareGlyph(ushort c)
 void Font::prepareForString(const UString& str)
 {
   bool updated=false;
-  for(int i=0;i<str.getSize();)
+  for(size_t i=0;i<str.getSize();)
   {
     if(prepareGlyph(str.getNext(i)))
     {

@@ -272,7 +272,7 @@ void UIContainer::moveFocusToNext()
     {
       if((*it)->isFocused())
       {
-        fIdx=ts.size();
+        fIdx=static_cast<int>(ts.size());
       }
       ts.push_back(it->get());
     }

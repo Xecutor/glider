@@ -1,0 +1,3 @@
+[submodule "dependencies/kst"]
+	path = dependencies/kst
+	url = https://github.com/Xecutor/kst.git

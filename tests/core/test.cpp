@@ -174,6 +174,7 @@ int GliderAppMain(int argc,char* argv[])
 {
   kst::Logger::Init("test.log");
   engine.setVSync(true);
+  engine.enableResizable();
   engine.selectResolution(1024,768,false);
   //engine.selectResolution(800,480,false);
   engine.setResolution();
@@ -306,7 +307,7 @@ int GliderAppMain(int argc,char* argv[])
 
   state.pushOffset(Pos(0,0));
   engine.loop(&sc);
-  engine.setDefaultFont(0);
+  engine.setDefaultFont(nullptr);
 
   }catch(std::exception& e)
   {

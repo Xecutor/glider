@@ -10,7 +10,7 @@ if(VCPKG_ROOT)
   include(${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake)
 endif()
 
-add_subdirectory(deps)
+add_subdirectory(dependencies)
 
 find_package(SDL2 REQUIRED)
 find_package(OpenGL REQUIRED)

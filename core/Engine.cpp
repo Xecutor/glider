@@ -169,7 +169,7 @@ void Engine::beginFrame()
 
 void Engine::endFrame()
 {
-//  glFlush();
+  //glFlush();
   //glFinish();
   SDL_GL_SwapWindow(screen);
 }
@@ -190,6 +190,7 @@ void Engine::loop(Drawable* obj)
   Timer pt;
   frameTimer.Start();
   static kst::Logger* log=kst::Logger::getLogger("perf");
+  int64_t maxEventProcTime = delay?delay:100000;
   while(!loopExitFlag && !appExitFlag)
   {
     if(limitFps && targetFps>0)
@@ -207,8 +208,10 @@ void Engine::loop(Drawable* obj)
     }
     pt.Finish();
     LOGDEBUG(log,"poll %{} mcs",pt.GetMcs());
-    while(haveEvent && !appExitFlag)
+    int64_t eventProcessingTimeMcs = 0;
+    while(haveEvent && !appExitFlag && eventProcessingTimeMcs<maxEventProcTime)
     {
+      pt.Start();
       switch(event.type)
       {
         case SDL_WINDOWEVENT:
@@ -314,7 +317,7 @@ void Engine::loop(Drawable* obj)
             ke.eventType=ketInput;
             ke.keyMod=keyboard::GK_MOD_NONE;
             ke.keySym=keyboard::GK_UNKNOWN;
-            int pos=0;
+            size_t pos=0;
             while(event.text.text[pos]!=0)
             {
               ke.unicodeSymbol=UString::getNextSymbol(event.text.text,pos);
@@ -330,12 +333,15 @@ void Engine::loop(Drawable* obj)
           }
         }break;
       }
-      if(limitFps && targetFps==0)
-      {
-        haveEvent=SDL_WaitEvent(&event)!=0;
-      }else
+      pt.Finish();
+      LOGDEBUG(log,"eventTime=%{} mcs", pt.GetMcs());
+      eventProcessingTimeMcs += pt.GetMcs();
+      if(!limitFps || targetFps!=0)
       {
         haveEvent=SDL_PollEvent(&event)!=0;
+      }
+      else {
+        haveEvent = false;
       }
     }
     if(handler)

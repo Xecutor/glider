@@ -3,7 +3,7 @@
 
 namespace glider{
 
-UString::UString(const char* argStr,int argLength)
+UString::UString(const char* argStr,size_t argLength)
 {
   modified=false;
   symbols=0;
@@ -65,7 +65,7 @@ UString& UString::operator+=(const UString& rhs)
   return *this;
 }
 
-int UString::getNextPos(const char* argStr,int pos)
+size_t UString::getNextPos(const char* argStr,size_t pos)
 {
   uint c=(unsigned char)argStr[pos];
   pos++;
@@ -85,7 +85,7 @@ int UString::getNextPos(const char* argStr,int pos)
   return pos;
 }
 
-ushort UString::getNext(int& pos)const
+ushort UString::getNext(size_t& pos)const
 {
   if(pos>=bytes)
   {
@@ -95,10 +95,10 @@ ushort UString::getNext(int& pos)const
   return (ushort)c;
 }
 
-int UString::calcLength(const char* str,int bytes)
+size_t UString::calcLength(const char* str,size_t bytes)
 {
-  int symbols=0;
-  for(int i=0;i<bytes;symbols++)
+  size_t symbols=0;
+  for(size_t i=0;i<bytes;symbols++)
   {
     unsigned char c=str[i];
     if(c<0x80)
@@ -129,10 +129,10 @@ void UString::updateLength()const
   modified=false;
 }
 
-int UString::getLetterOffset(int idx)const
+size_t UString::getLetterOffset(size_t idx)const
 {
-  int rv=0;
-  for(int i=0;i<idx;i++)
+  size_t rv=0;
+  for(size_t i=0;i<idx;i++)
   {
     getNext(rv);
   }
@@ -140,7 +140,7 @@ int UString::getLetterOffset(int idx)const
 }
 
 
-ushort UString::getNextSymbol(const char* str,int& pos)
+ushort UString::getNextSymbol(const char* str,size_t& pos)
 {
   uint c=(unsigned char)str[pos];
   pos++;
@@ -167,9 +167,9 @@ ushort UString::getNextSymbol(const char* str,int& pos)
   return (ushort)c;
 }
 
-int UString::ucs2ToUtf8(ushort symbol,char* buf)
+size_t UString::ucs2ToUtf8(ushort symbol,char* buf)
 {
-  int rv=0;
+  size_t rv=0;
   if (symbol<0x80)
   {
       buf[rv++]=symbol&0xff;

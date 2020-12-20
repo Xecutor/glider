@@ -32,11 +32,11 @@ public:
     sscanf(value.c_str(),"%d",&rv);
     return rv;
   }
-  int getCurPos()const
+  size_t getCurPos()const
   {
     return curPos;
   }
-  void setCurPos(int argCurPos,bool extendSelection=false);
+  void setCurPos(size_t argCurPos,bool extendSelection=false);
   void insertText(const char* txt);
   void resetSelection();
 
@@ -84,11 +84,11 @@ protected:
   };
   CursorBlinkAnimation curBlinkAni;
   int lastCurBlink;
-  int curPos;
-  int selStart,selEnd;
+  size_t curPos;
+  size_t selStart,selEnd;
   bool haveSelection()const
   {
-    return selStart!=-1 && selStart!=selEnd;
+    return selStart!=selEnd;
   }
   bool isCurVisible;
   bool cursorBlinkAnimation(int mcsec);

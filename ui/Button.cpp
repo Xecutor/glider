@@ -55,8 +55,8 @@ void Button::setCaption(const char* argCaption)
   Pos capPos=size;
   capPos-=Pos((float)caption.getWidth(),(float)caption.getHeight());
   capPos/=2;
-  capPos.x=floor(capPos.x);
-  capPos.y=floor(capPos.y);
+  capPos.x=floorf(capPos.x);
+  capPos.y=floorf(capPos.y);
   caption.setPosition(capPos);
   captionShade.setPosition(capPos+Pos(1,1));
 }

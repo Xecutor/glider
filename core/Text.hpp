@@ -55,18 +55,18 @@ public:
     return vb.getCBuf();
   }
 
-  void getLetterExtent(int idx,Pos& argPos,Pos& argSize);
-  int getTextLength()const
+  void getLetterExtent(size_t idx,Pos& argPos,Pos& argSize);
+  size_t getTextLength()const
   {
     return str.getLength();
   }
 
-  int getLinesCount()const
+  size_t getLinesCount()const
   {
     return linesCount;
   }
 
-  const std::vector<int>& getLinesStart()const
+  const std::vector<size_t>& getLinesStart()const
   {
     return linesStart;
   }
@@ -91,8 +91,8 @@ protected:
   bool wordWrap;
   int width;
   int height;
-  int linesCount;
-  std::vector<int> linesStart;
+  size_t linesCount;
+  std::vector<size_t> linesStart;
   VertexBuffer vb;
   void prepare(bool rawText);
 };
