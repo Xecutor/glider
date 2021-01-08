@@ -1,218 +1,178 @@
 #include "Button.hpp"
-#include "UIConfig.hpp"
+
 #include "GLState.hpp"
+#include "UIConfig.hpp"
 #include "UIRoot.hpp"
 
-namespace glider{
-namespace ui{
+namespace glider {
+namespace ui {
 
-Button::Button(const char* argCaption,const char* argName,UICallBack cb)
-{
-  ani.btn=this;
-  aniCnt=aniMaxCnt=200000;
-  newClr=Color(1,1,1,1);
+Button::Button(std::string_view argCaption, std::string_view argName, UICallBack cb) {
+  ani.btn = this;
+  aniCnt = aniMaxCnt = 200000;
+  newClr = Color(1, 1, 1, 1);
   caption.assignFont(uiConfig.getButtonFont());
   captionShade.assignFont(uiConfig.getButtonFont());
-  caption.setColor(Color(0,0,0,1));
+  caption.setColor(Color(0, 0, 0, 1));
   setNormalState();
 
-
-  int w=80;
-  if(argCaption)
-  {
+  int w = 80;
+  if (!argCaption.empty()) {
     caption.setText(argCaption);
-    w=caption.getWidth()+8;
+    w = caption.getWidth() + 8;
   }
-  size=Pos((float)w,(float)(uiConfig.getButtonFont()->getHeight()+6));
+  size = Pos((float)w, (float)(uiConfig.getButtonFont()->getHeight() + 6));
   tmpRect.setSize(size);
-  capSciss.setRect(Rect(Pos(),size));
-  buttonDown=false;
-  mouseOver=false;
-  if(argCaption)
-  {
+  capSciss.setRect(Rect(Pos(), size));
+  buttonDown = false;
+  mouseOver = false;
+  if (!argCaption.empty()) {
     setCaption(argCaption);
   }
-  if(argName)
-  {
+  if (!argName.empty()) {
     setName(argName);
   }
-  if(cb)
-  {
-    setEventHandler(betOnClick,cb);
+  if (cb) {
+    setEventHandler(betOnClick, cb);
   }
 }
 
-Button::~Button()
-{
+Button::~Button() {
   root->removeAnimation(&ani);
 }
 
-void Button::setCaption(const char* argCaption)
-{
+void Button::setCaption(std::string_view argCaption) {
   caption.setText(argCaption);
-  captionShade.setColor(Color(0.7f,0.7f,0.7f));
+  captionShade.setColor(Color(0.7f, 0.7f, 0.7f));
   captionShade.setText(argCaption);
-  Pos capPos=size;
-  capPos-=Pos((float)caption.getWidth(),(float)caption.getHeight());
-  capPos/=2;
-  capPos.x=floorf(capPos.x);
-  capPos.y=floorf(capPos.y);
+  Pos capPos = size;
+  capPos -= Pos((float)caption.getWidth(), (float)caption.getHeight());
+  capPos /= 2;
+  capPos.x = floorf(capPos.x);
+  capPos.y = floorf(capPos.y);
   caption.setPosition(capPos);
-  captionShade.setPosition(capPos+Pos(1,1));
+  captionShade.setPosition(capPos + Pos(1, 1));
 }
 
-void Button::draw()
-{
+void Button::draw() {
   RelOffsetGuard rog(pos);
   tmpRect.draw();
   capSciss.draw(&captionShade);
   capSciss.draw(&caption);
-  //caption.draw();
+  // caption.draw();
 }
 
-void Button::onMouseEnter(const MouseEvent& me)
-{
-  if(buttonDown)
-  {
+void Button::onMouseEnter(const MouseEvent& me) {
+  if (buttonDown) {
     setDownState();
-  }else
-  {
+  } else {
     setHoverState();
   }
-  mouseOver=true;
+  mouseOver = true;
   UIObject::onMouseEnter(me);
 }
 
-void Button::onMouseLeave(const MouseEvent& me)
-{
-  mouseOver=false;
+void Button::onMouseLeave(const MouseEvent& me) {
+  mouseOver = false;
   setNormalState();
   UIObject::onMouseLeave(me);
 }
 
-void Button::onMouseMove(const MouseEvent& me)
-{
-  if(isInside(Pos((float)me.x,(float)me.y)))
-  {
-    mouseOver=true;
-    if(buttonDown)
-    {
+void Button::onMouseMove(const MouseEvent& me) {
+  if (isInside(Pos((float)me.x, (float)me.y))) {
+    mouseOver = true;
+    if (buttonDown) {
       setDownState();
-    }else
-    {
+    } else {
       setHoverState();
     }
-  }else
-  {
-    mouseOver=false;
+  } else {
+    mouseOver = false;
     setNormalState();
   }
 }
 
-
-void Button::onMouseButtonDown(const MouseEvent& me)
-{
-  if(me.eventButton==1)
-  {
+void Button::onMouseButtonDown(const MouseEvent& me) {
+  if (me.eventButton == 1) {
     setDownState();
     root->lockMouse(this);
-    buttonDown=true;
+    buttonDown = true;
   }
   UIObject::onMouseButtonDown(me);
 }
 
-void Button::onMouseButtonUp(const MouseEvent& me)
-{
-  if(me.eventButton==1 && buttonDown)
-  {
-    if(mouseOver)
-    {
+void Button::onMouseButtonUp(const MouseEvent& me) {
+  if (me.eventButton == 1 && buttonDown) {
+    if (mouseOver) {
       setHoverState();
-    }else
-    {
+    } else {
       setNormalState();
     }
     root->unlockMouse();
-    if(isInside(Pos((float)me.x,(float)me.y)))
-    {
+    if (isInside(Pos((float)me.x, (float)me.y))) {
       onMouseClick(me);
     }
-    buttonDown=false;
+    buttonDown = false;
     UIObject::onMouseButtonUp(me);
   }
 }
 
-void Button::onMouseClick(const MouseEvent& me)
-{
-  if(me.eventButton==1)
-  {
-    if(btnCb[betOnClick])
-    {
-      btnCb[betOnClick](UIEvent(uietMouseClick,me));
+void Button::onMouseClick(const MouseEvent& me) {
+  if (me.eventButton == 1) {
+    if (btnCb[betOnClick]) {
+      btnCb[betOnClick](UIEvent(uietMouseClick, me));
     }
   }
   UIObject::onMouseClick(me);
 }
 
-Color Button::getCurrentClr()
-{
-  if(aniCnt>=aniMaxCnt)
-  {
+Color Button::getCurrentClr() {
+  if (aniCnt >= aniMaxCnt) {
     return newClr;
   }
-  Color rv=oldClr;
-  rv.r+=(newClr.r-oldClr.r)*aniCnt/aniMaxCnt;
-  rv.g+=(newClr.g-oldClr.g)*aniCnt/aniMaxCnt;
-  rv.b+=(newClr.b-oldClr.b)*aniCnt/aniMaxCnt;
-  rv.a+=(newClr.a-oldClr.a)*aniCnt/aniMaxCnt;
+  Color rv = oldClr;
+  rv.r += (newClr.r - oldClr.r) * aniCnt / aniMaxCnt;
+  rv.g += (newClr.g - oldClr.g) * aniCnt / aniMaxCnt;
+  rv.b += (newClr.b - oldClr.b) * aniCnt / aniMaxCnt;
+  rv.a += (newClr.a - oldClr.a) * aniCnt / aniMaxCnt;
   return rv;
 }
 
-
-void Button::changeClr(Color argNewClr)
-{
-  oldClr=getCurrentClr();
-  newClr=argNewClr;
+void Button::changeClr(Color argNewClr) {
+  oldClr = getCurrentClr();
+  newClr = argNewClr;
   startAnimation();
 }
 
-void Button::setHoverState()
-{
-  changeClr(Color(0.8f,0.7f,0.8f));
+void Button::setHoverState() {
+  changeClr(Color(0.8f, 0.7f, 0.8f));
 }
 
-void Button::setDownState()
-{
-  //changeClr(Color(0.3,0.2,0.2));
-  newClr=Color(0.7f,0.8f,0.8f);
+void Button::setDownState() {
+  // changeClr(Color(0.3,0.2,0.2));
+  newClr = Color(0.7f, 0.8f, 0.8f);
   updateAnimation(0);
 }
 
-void Button::setNormalState()
-{
-  changeClr(Color(0.8f,0.8f,0.8f));
+void Button::setNormalState() {
+  changeClr(Color(0.8f, 0.8f, 0.8f));
 }
 
-void Button::startAnimation()
-{
-  if(aniCnt>=aniMaxCnt)
-  {
+void Button::startAnimation() {
+  if (aniCnt >= aniMaxCnt) {
     root->addAnimation(&ani);
   }
-  aniCnt=0;
+  aniCnt = 0;
 }
 
-bool Button::updateAnimation(int mcs)
-{
-  aniCnt+=mcs;
-  if(aniCnt>aniMaxCnt)
-  {
-    aniCnt=aniMaxCnt;
+bool Button::updateAnimation(int mcs) {
+  aniCnt += mcs;
+  if (aniCnt > aniMaxCnt) {
+    aniCnt = aniMaxCnt;
   }
   tmpRect.setColor(getCurrentClr());
-  return aniCnt<aniMaxCnt;
+  return aniCnt < aniMaxCnt;
 }
 
-
-}
-}
+}  // namespace ui
+}  // namespace glider

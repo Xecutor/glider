@@ -1,5 +1,4 @@
-#ifndef __GLIDER_UI_CONTROL_HPP__
-#define __GLIDER_UI_CONTROL_HPP__
+#pragma once
 
 #include "UIObject.hpp"
 
@@ -14,5 +13,3 @@ protected:
 
 }
 }
-
-#endif

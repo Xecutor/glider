@@ -1,86 +1,88 @@
-#ifndef __GLIDER_UI_UICONTAINER_HPP__
-#define __GLIDER_UI_UICONTAINER_HPP__
+#pragma once
 
-#include "UIObject.hpp"
 #include <map>
-#include "Scene.hpp"
+
 #include "Layout.hpp"
+#include "Scene.hpp"
+#include "UIObject.hpp"
 
-namespace glider{
-namespace ui{
+namespace glider::ui {
 
-class UIContainerEnumerator{
+class UIContainerEnumerator {
 public:
-  virtual ~UIContainerEnumerator(){}
-  virtual bool nextItem(UIObject* obj)=0;
+  virtual ~UIContainerEnumerator() {
+  }
+  virtual bool nextItem(UIObject* obj) = 0;
 };
 
-class UIContainer:public UIObject{
+class UIContainer : public UIObject {
 public:
-  UIContainer(){}
-  void draw();
-  void addObject(UIObject* obj);
-  void removeObject(UIObject* obj);
-  void moveObjectToFront(UIObject* obj);
+  using Ref = ReferenceTmpl<UIContainer>;
+
+  UIContainer() = default;
+
+  void draw() override;
+
+  void addObject(UIObject::Ref obj);
+
+  void removeObject(UIObject::Ref obj);
+
+  void moveObjectToFront(UIObject::Ref obj);
+
   void clear();
 
-  virtual bool isContainer()const
-  {
+  virtual bool isContainer() const {
     return true;
   }
 
-  void setLayout(LayoutRef argLayout)
-  {
-    layout=argLayout;
-    //layout->fillObjects(this);
-    layout->update(Pos(0,0),size);
+  void setLayout(Layout::Ref argLayout) {
+    layout = argLayout;
+    // layout->fillObjects(this);
+    layout->update(Pos(0, 0), size);
   }
 
-  Layout& getLayout()
-  {
+  Layout& getLayout() {
     return *layout.get();
   }
 
-  void updateLayout()
-  {
-    if(layout.get())
-    {
-      layout->update(Pos(0,0), getSize());
+  void updateLayout() {
+    if (layout.get()) {
+      layout->update(Pos(0, 0), getSize());
     }
   }
 
-  virtual UIObjectRef findByName(const std::string& argName);
+  virtual UIObject::Ref findByName(const std::string& argName);
 
   void moveFocusToNext();
 
   void enumerate(UIContainerEnumerator* enumerator);
 
-  size_t getCount()const
-  {
+  size_t getCount() const {
     return objLst.size();
   }
 
-  const UIObjectsList& getObjList()const
-  {
+  const UIObjectsList& getObjList() const {
     return objLst;
   }
 
 protected:
-
   UIObjectsList objLst;
-  LayoutRef layout;
+  Layout::Ref layout;
 
-  typedef std::map<int,UIObjectsList::iterator> IdMap;
+  typedef std::map<int, UIObjectsList::iterator> IdMap;
   IdMap idMap;
   UIObjectsList mouseEnterStack;
-  typedef std::map<std::string,UIObjectRef> NameMap;
+  typedef std::map<std::string, UIObject::Ref> NameMap;
   NameMap nameMap;
 
   void endOfResize();
 
-  virtual void onAddObject(){}
-  virtual void onRemoveObject(UIObjectsList::iterator it){}
-  virtual void onClear(){}
+  virtual void onAddObject() {
+  }
+  virtual void onRemoveObject(UIObjectsList::iterator it) {
+  }
+  virtual void onClear() {
+  }
 
   void onMouseLeave(const MouseEvent& me);
   void onMouseMove(const MouseEvent& me);
@@ -93,12 +95,6 @@ protected:
   void onObjectResizeEnd();
   void onFocusGain();
   void onFocusLost();
-
 };
 
-typedef ReferenceTmpl<UIContainer> UIContainerRef;
-
-}
-}
-
-#endif
+}  // namespace glider::ui

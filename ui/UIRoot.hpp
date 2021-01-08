@@ -1,62 +1,54 @@
-#ifndef __GLIDER_UI_UIROOT_HPP__
-#define __GLIDER_UI_UIROOT_HPP__
+#pragma once
 
-#include "UIContainer.hpp"
 #include "UIAnimation.hpp"
+#include "UIContainer.hpp"
 
-namespace glider{
-namespace ui{
+namespace glider::ui {
 
-typedef EventCallback0 UserCallback;
+using UserCallback = EventCallback<>;
 
-class UIRoot:public UIContainer,public EventHandler{
+class UIRoot : public UIContainer, public EventHandler {
 public:
   UIRoot();
   void onActiveChange(bool active);
   void onMouseEvent(MouseEvent& argEvent);
   void onKeyboardEvent(KeyboardEvent& argEvent);
-  static void postMouseEvent(const MouseEvent& argEvent,UIObject* obj);
-  static void postKeyboardEvent(const KeyboardEvent& argEvent,UIObject* obj);
+  static void postMouseEvent(const MouseEvent& argEvent, UIObject& obj);
+  static void postKeyboardEvent(const KeyboardEvent& argEvent, UIObject& obj);
   void onResize();
   void onQuit();
   void onFrameUpdate(int mcsec);
-  void onUserEvent(void* data1,void* data2);
-  void lockMouse(UIObject* obj)
-  {
+  void onUserEvent(void* data1, void* data2);
+  void lockMouse(UIObject::Ref obj) {
     mouseLock.push_back(obj);
   }
-  void unlockMouse()
-  {
-    if(mouseLock.empty())
-    {
+  void unlockMouse() {
+    if (mouseLock.empty()) {
       KSTHROW("unbalanced mouse unlock!");
     }
     mouseLock.pop_back();
   }
-  bool isMouseLocked()const
-  {
+  bool isMouseLocked() const {
     return !mouseLock.empty();
   }
-  void setKeyboardFocus(UIObject* obj)
-  {
-    if(keyFocus.get() && keyFocus.get()!=obj)
-    {
+  void setKeyboardFocus(UIObject::Ref obj) {
+    if (keyFocus.isAssigned() && keyFocus != obj) {
       keyFocus->removeFocus();
     }
-    keyFocus=obj;
+    keyFocus = obj;
   }
   static void init();
   static void shutdown();
   void addAnimation(UIAnimation* argAni);
   void removeAnimation(UIAnimation* argAni);
 
-  void replaceLoop(UIObject& obj);
-  void modalLoop(UIObject& obj);
+  void replaceLoop(UIObject::Ref obj);
+  void modalLoop(UIObject::Ref obj);
 
   void exitModal();
 
 protected:
-  UIObjectRef keyFocus;
+  UIObject::Ref keyFocus;
   UIObjectsList mouseLock;
   typedef std::list<UIAnimation*> AniList;
   AniList animations;
@@ -65,7 +57,4 @@ protected:
 
 extern UIRoot* root;
 
-}
-}
-
-#endif
+}  // namespace glider::ui

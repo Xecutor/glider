@@ -1,31 +1,27 @@
-#ifndef __GLIDER_UI_BUTTON_HPP__
-#define __GLIDER_UI_BUTTON_HPP__
+#pragma once
 
 #include "Control.hpp"
 #include "Rectangle.hpp"
-#include "Text.hpp"
 #include "Scissors.hpp"
+#include "Text.hpp"
 #include "UIAnimation.hpp"
 
-namespace glider{
-namespace ui{
+namespace glider::ui {
 
-enum ButtonEventType{
-  betOnClick,
-  betCount
-};
+enum ButtonEventType { betOnClick, betCount };
 
-class Button:public Control{
+class Button : public Control {
 public:
-  Button(const char* argCaption=0,const char* argName=0,UICallBack cb=UICallBack());
+  using Ref = ReferenceTmpl<Button>;
+
+  Button(std::string_view argCaption = {}, std::string_view argName = {}, UICallBack cb = UICallBack());
   ~Button();
-  void setCaption(const char* argCaption);
+  void setCaption(std::string_view argCaption);
   void draw();
 
   using UIObject::setEventHandler;
-  Button& setEventHandler(ButtonEventType et,UICallBack cb)
-  {
-    btnCb[et]=cb;
+  Button& setEventHandler(ButtonEventType et, UICallBack cb) {
+    btnCb[et] = cb;
     return *this;
   }
 
@@ -38,20 +34,18 @@ protected:
   bool mouseOver;
 
   friend struct BtnAnimation;
-  struct BtnAnimation:public UIAnimation{
+  struct BtnAnimation : public UIAnimation {
     Button* btn;
-    bool update(int mcs)
-    {
+    bool update(int mcs) {
       return btn->updateAnimation(mcs);
     }
-    bool deleteOnFinish()
-    {
+    bool deleteOnFinish() {
       return false;
     }
   };
   BtnAnimation ani;
 
-  Color oldClr,newClr;
+  Color oldClr, newClr;
   void changeClr(Color argNewClr);
   Color getCurrentClr();
 
@@ -74,7 +68,4 @@ protected:
   void onMouseClick(const MouseEvent& me);
 };
 
-}
-}
-
-#endif
+}  // namespace glider::ui

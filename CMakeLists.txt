@@ -29,7 +29,7 @@ endif()
 
 include_directories(core ui)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 
 if(MSVC)
   add_definitions(-D_CRT_SECURE_NO_WARNINGS)

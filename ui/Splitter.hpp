@@ -1,60 +1,50 @@
 /*
  * Splitter.hpp
  *
- *  Created on: 11 сент. 2016 г.
+ *  Created on: 11 пїЅпїЅпїЅпїЅ. 2016 пїЅ.
  *      Author: konst
  */
 
 #ifndef SRC_UI_SPLITTER_HPP_
 #define SRC_UI_SPLITTER_HPP_
 
-#include "UIContainer.hpp"
 #include "Rectangle.hpp"
+#include "UIContainer.hpp"
 
-namespace glider{
-namespace ui{
+namespace glider {
+namespace ui {
 
-class Splitter : public UIContainer{
+class Splitter : public UIContainer {
 public:
-  enum SplitterOrientation{
-    soHorizontal,
-    soVertical
-  };
-  enum ResizePolicy{
-    rpProportional,
-    rpKeepFirst,
-    rpKeepSecond
-  };
+  enum SplitterOrientation { soHorizontal, soVertical };
+  enum ResizePolicy { rpProportional, rpKeepFirst, rpKeepSecond };
   Splitter(SplitterOrientation argOrientation, int argPosition);
-  void setFirst(UIObjectRef obj);
-  void setSecond(UIObjectRef obj);
+  void setFirst(UIObject::Ref obj);
+  void setSecond(UIObject::Ref obj);
   void setPosition(int argPosition);
-  int getPosition()const
-  {
+  int getPosition() const {
     return position;
   }
-  void setResizePolicy(ResizePolicy argResizePolicy)
-  {
-    resizePolicy=argResizePolicy;
+  void setResizePolicy(ResizePolicy argResizePolicy) {
+    resizePolicy = argResizePolicy;
   }
-  SplitterOrientation getOrientation()const
-  {
+  SplitterOrientation getOrientation() const {
     return orientation;
   }
+
 protected:
   SplitterOrientation orientation;
-  ResizePolicy resizePolicy=rpProportional;
-  UIObjectRef first,second;
-  struct SplitterRect: public UIObject {
+  ResizePolicy resizePolicy = rpProportional;
+  UIObject::Ref first, second;
+  struct SplitterRect : public UIObject {
     Rectangle rect;
-    void draw()
-    {
+    void draw() {
       rect.draw();
     }
     void onMouseButtonDown(const MouseEvent& me);
     void onMouseButtonUp(const MouseEvent& me);
     void onMouseMove(const MouseEvent& me);
-    bool resizing=false;
+    bool resizing = false;
     Posi<int> resStart;
     int startPos;
   };
@@ -73,12 +63,9 @@ protected:
 
   void updateFirstPosAndSize();
   void updateSecondPosAndSize();
-
 };
 
-}
-}
-
-
+}  // namespace ui
+}  // namespace glider
 
 #endif /* SRC_UI_SPLITTER_HPP_ */

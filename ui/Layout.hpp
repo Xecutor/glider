@@ -1,124 +1,113 @@
-#ifndef __GLIDER_UI_LAYOUT_HPP__
-#define __GLIDER_UI_LAYOUT_HPP__
+#pragma once
 
 #include "UIObject.hpp"
 
-namespace glider{
-namespace ui{
+namespace glider::ui {
 
-enum LayoutPlacementMode{
-  lpmFromTopToBottom,lpmFromLeftToRight,lpmFillMode
-};
+enum LayoutPlacementMode { lpmFromTopToBottom, lpmFromLeftToRight, lpmFillMode };
 
-enum LayoutFillMode{
-  lfmMin,lfmEven,lfmMax
-};
+enum LayoutFillMode { lfmMin, lfmEven, lfmMax };
 
-enum LayoutHAlignment{
-  hlaLeft,hlaCenter,hlaRight
-};
-enum LayoutVAlignment{
-  vlaTop,vlaCenter,vlaBottom
-};
+enum LayoutHAlignment { hlaLeft, hlaCenter, hlaRight };
+enum LayoutVAlignment { vlaTop, vlaCenter, vlaBottom };
 
-enum LayoutItemType{
-  litObject,
-  litArea,
-  litGrid
-};
+enum LayoutItemType { litObject, litArea, litGrid };
 
 class UIContainer;
 
-class Layout:public Managed{
+class Layout : public Managed {
 public:
+  using Ref = ReferenceTmpl<Layout>;
+
   Layout(const char* code);
 
-  struct ItemBase:Managed{
-    ItemBase(LayoutItemType argLit):lit(argLit){}
+  struct ItemBase : Managed {
+    using Ref = ReferenceTmpl<ItemBase>;
+    ItemBase(LayoutItemType argLit) : lit(argLit) {
+    }
     LayoutItemType lit;
-    virtual Pos getSize()=0;
-    virtual void calcSize(){}
-    virtual void update(const Pos& argPos,const Pos& argSize)=0;
-    virtual void fillObjects(UIContainer* con)=0;
+    virtual Pos getSize() = 0;
+    virtual void calcSize() {
+    }
+    virtual void update(const Pos& argPos, const Pos& argSize) = 0;
+    virtual void fillObjects(UIContainer* con) = 0;
     template <class T>
-    T& as()
-    {
+    T& as() {
       return *((T*)this);
     }
   };
 
-  typedef ReferenceTmpl<ItemBase> ItemRef;
+  using ItemVector = std::vector<ItemBase::Ref>;
 
-  typedef std::vector<ItemRef> ItemVector;
-
-  struct Object:ItemBase{
-    UIObjectRef obj;
+  struct Object : ItemBase {
+    UIObject::Ref obj;
     std::string name;
     bool maximizeH, maximizeV;
-    Object(const std::string& argName,bool argMaximizeH=false, bool argMaximizeV=false):
-      ItemBase(litObject),name(argName),maximizeH(argMaximizeH), maximizeV(argMaximizeV){}
-    Object(UIObjectRef argObj, bool argMaximizeH=false,bool argMaximizeV=false):
-      ItemBase(litObject),obj(argObj),maximizeH(argMaximizeH),maximizeV(argMaximizeV){}
-    Pos getSize()
-    {
-      return obj.get()?obj->getSize():Pos(0,0);
+    Object(const std::string& argName, bool argMaximizeH = false, bool argMaximizeV = false)
+        : ItemBase(litObject), name(argName), maximizeH(argMaximizeH), maximizeV(argMaximizeV) {
     }
-    void calcSize(){}
-    void update(const Pos& argPos,const Pos& argSize)
-    {
+    Object(UIObject::Ref argObj, bool argMaximizeH = false, bool argMaximizeV = false)
+        : ItemBase(litObject), obj(argObj), maximizeH(argMaximizeH), maximizeV(argMaximizeV) {
+    }
+    Pos getSize() {
+      return obj.get() ? obj->getSize() : Pos(0, 0);
+    }
+    void calcSize() {
+    }
+    void update(const Pos& argPos, const Pos& argSize) {
       obj->setPos(argPos);
-      if(maximizeH || maximizeV)
-      {
+      if (maximizeH || maximizeV) {
         Pos newSz = obj->getSize();
-        if(maximizeH)newSz.x=argSize.x;
-        if(maximizeV)newSz.y=argSize.y;
+        if (maximizeH)
+          newSz.x = argSize.x;
+        if (maximizeV)
+          newSz.y = argSize.y;
         obj->setSize(newSz);
       }
     }
     virtual void fillObjects(UIContainer* con);
   };
-  struct Area:ItemBase{
-    Area():ItemBase(litArea){}
+  struct Area : ItemBase {
+    Area() : ItemBase(litArea) {
+    }
     LayoutFillMode lfm;
     LayoutPlacementMode lpm;
     LayoutHAlignment hla;
     LayoutVAlignment vla;
-    int hsp,vsp;
+    int hsp, vsp;
     Rect r;
     ItemVector items;
 
     Area(const char* code);
 
-    void addItem(ItemBase* argItem)
-    {
+    void addItem(ItemBase::Ref argItem) {
       items.push_back(argItem);
     }
 
     void calcSize();
-    void update(const Pos& argPos,const Pos& argSize);
+    void update(const Pos& argPos, const Pos& argSize);
 
     void fillObjects(UIContainer* con);
 
-    Pos getSize()
-    {
+    Pos getSize() {
       return r.size;
     }
   };
 
-  struct Grid:ItemBase{
+  struct Grid : ItemBase {
     Grid(const char* code);
-    Grid(int argWidth,int argHeight):ItemBase(litGrid)
-    {
-      setDim(argWidth,argHeight);
-      hsp=3;
-      vsp=3;
+    Grid(int argWidth, int argHeight) : ItemBase(litGrid) {
+      setDim(argWidth, argHeight);
+      hsp = 3;
+      vsp = 3;
     }
 
-    struct ColumnInfo{
+    struct ColumnInfo {
       LayoutHAlignment la;
       LayoutFillMode lfm;
       int width;
-      ColumnInfo():la(hlaLeft),lfm(lfmMin){}
+      ColumnInfo() : la(hlaLeft), lfm(lfmMin) {
+      }
     };
 
     typedef std::vector<ColumnInfo> ColumnInfoVector;
@@ -127,82 +116,64 @@ public:
     typedef std::vector<ItemVector> GridVector;
     Rect r;
     GridVector grid;
-    int width,height;
-    int hsp,vsp;
+    int width, height;
+    int hsp, vsp;
 
-    void setDim(int argWidth,int argHeight)
-    {
-      width=argWidth;
-      height=argHeight;
+    void setDim(int argWidth, int argHeight) {
+      width = argWidth;
+      height = argHeight;
       grid.resize(argHeight);
-      for(int i=0;i<argHeight;i++)
-      {
+      for (int i = 0; i < argHeight; i++) {
         grid[i].resize(argWidth);
       }
       colInfo.resize(argWidth);
     }
 
     void calcSize();
-    void update(const Pos& argPos,const Pos& argSize);
+    void update(const Pos& argPos, const Pos& argSize);
     void fillObjects(UIContainer* con);
 
-    void setItemAt(int x,int y,ItemRef item)
-    {
-      grid[y][x]=item;
+    void setItemAt(int x, int y, ItemBase::Ref item) {
+      grid[y][x] = item;
     }
 
-    ItemRef cell(int x,int y)
-    {
+    ItemBase::Ref cell(int x, int y) {
       return grid[y][x];
     }
-    Pos getSize()
-    {
+    Pos getSize() {
       return r.size;
     }
   };
 
-  void add(ItemBase* argItem)
-  {
+  void add(ItemBase* argItem) {
     main.addItem(argItem);
   }
-  void add(UIObjectRef argObj,bool maximize=false)
-  {
-    main.addItem(new Object(argObj,maximize));
+  void add(UIObject::Ref argObj, bool maximize = false) {
+    main.addItem(MakeRef<Object>(argObj, maximize));
   }
 
-  Pos calcSize()
-  {
+  Pos calcSize() {
     main.calcSize();
     return getSize();
   }
 
-  void update(const Pos& argPos,const Pos& argSize)
-  {
+  void update(const Pos& argPos, const Pos& argSize) {
     main.calcSize();
-    main.update(argPos,argSize);
+    main.update(argPos, argSize);
   }
-  Pos getSize()const
-  {
+  Pos getSize() const {
     return main.r.size;
   }
 
-  void fillObjects(UIContainer* con)
-  {
+  void fillObjects(UIContainer* con) {
     main.fillObjects(con);
   }
-  Area& getMainArea()
-  {
+  Area& getMainArea() {
     return main;
   }
+
 protected:
   Area main;
-
 };
 
-typedef ReferenceTmpl<Layout> LayoutRef;
-
-
-}
-}
-
-#endif
+}  // namespace glider::ui

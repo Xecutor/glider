@@ -1,60 +1,52 @@
-#ifndef __GLIDER_UI_WINDOW_HPP__
-#define __GLIDER_UI_WINDOW_HPP__
+#pragma once
 
-#include "UIContainer.hpp"
+#include "Label.hpp"
 #include "Rectangle.hpp"
 #include "Text.hpp"
-#include "Label.hpp"
+#include "UIContainer.hpp"
 
-namespace glider{
-namespace ui{
+namespace glider::ui {
 
-class Window:public UIContainer{
+class Window : public UIContainer {
 public:
-  Window(const Pos& argPos=Pos(0,0),const Pos& argSize=Pos(500,300),const char* argTitle=0);
+  using Ref = ReferenceTmpl<Window>;
+  Window(const Pos& argPos = Pos(0, 0), const Pos& argSize = Pos(500, 300), std::string_view argTitle = {});
   void draw();
-  void setTitle(const char* argTitle)
-  {
+  void setTitle(std::string_view argTitle) {
     titleText->setCaption(argTitle);
   }
-  void addObject(UIObject* obj)
-  {
+  void addObject(UIObject::Ref obj) {
     client->addObject(obj);
   }
-  void setLayout(LayoutRef argLayout)
-  {
+  void setLayout(Layout::Ref argLayout) {
     client->setLayout(argLayout);
   }
-  Layout& getLayout()
-  {
+  Layout& getLayout() {
     return client->getLayout();
   }
-  int getTitleHeight()const
-  {
+  int getTitleHeight() const {
     return (int)title->rect.getSize().y;
   }
-  Pos getClientSize()const
-  {
-    return size-Pos(0.0f,(float)getTitleHeight());
+  Pos getClientSize() const {
+    return size - Pos(0.0f, (float)getTitleHeight());
   }
-  void setClientSize(const Pos& argSize)
-  {
-    setSize(argSize+Pos(0.0f,(float)getTitleHeight()));
+  void setClientSize(const Pos& argSize) {
+    setSize(argSize + Pos(0.0f, (float)getTitleHeight()));
   }
   void setResizable(bool argValue);
 
-  virtual UIObjectRef findByName(const std::string& argName)
-  {
+  virtual UIObject::Ref findByName(const std::string& argName) {
     return client->findByName(argName);
   }
-  void setFocus()
-  {
+  void setFocus() {
     client->setFocus();
   }
+
 protected:
-  class WindowTitle:public UIContainer{
+  class WindowTitle : public UIContainer {
   public:
-    WindowTitle():dragging(false){}
+    WindowTitle() : dragging(false) {
+    }
     void draw();
     void onObjectResize();
     Rectangle rect;
@@ -64,7 +56,7 @@ protected:
     void onMouseMove(const MouseEvent& me);
   };
   typedef ReferenceTmpl<WindowTitle> WindowTitleRef;
-  class WindowClient:public UIContainer{
+  class WindowClient : public UIContainer {
   public:
     void draw();
     void onObjectResize();
@@ -73,7 +65,7 @@ protected:
   typedef ReferenceTmpl<WindowClient> WindowClientRef;
   WindowTitleRef title;
   WindowClientRef client;
-  LabelRef titleText;
+  Label::Ref titleText;
   RectangleRef frame;
   RectangleRef resizer;
   bool resizing;
@@ -84,10 +76,6 @@ protected:
   void onObjectResize();
   void onFocusGain();
   void onFocusLost();
-
 };
 
-}
-}
-
-#endif
+}  // namespace glider::ui

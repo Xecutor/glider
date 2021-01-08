@@ -1,17 +1,14 @@
-#ifndef __GLIDER_DRAWTARGET_HPP__
-#define __GLIDER_DRAWTARGET_HPP__
+#pragma once
 
 #include "Managed.hpp"
 
-namespace glider{
+namespace glider {
 
-class Drawable:public Managed{
+class Drawable : public Managed {
 public:
-  virtual void draw()=0;
+  virtual void draw() = 0;
 };
 
 typedef ReferenceTmpl<Drawable> DrawableRef;
 
-}
-
-#endif
+}  // namespace glider

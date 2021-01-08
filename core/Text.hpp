@@ -1,83 +1,70 @@
-#ifndef __GLIDER_TEXT_HPP__
-#define __GLIDER_TEXT_HPP__
+#pragma once
 
-#include "Utility.hpp"
-#include "Font.hpp"
-#include "Drawable.hpp"
 #include <string>
 #include <vector>
+
+#include "Drawable.hpp"
+#include "Font.hpp"
 #include "UString.hpp"
+#include "Utility.hpp"
 #include "VertexBuffer.hpp"
 
-namespace glider{
+namespace glider {
 
-
-class Text:public Drawable{
+class Text : public Drawable {
 public:
-  Text(FontRef fnt=0,const char* str="",bool rawText=false,int maxWidth=0, bool wordWrap=true);
-  Text(const char* str,bool rawText=false,int maxWidth=0, bool wordWrap=true);
+  Text(FontRef fnt = {}, std::string_view str = {}, bool rawText = false, int maxWidth = 0, bool wordWrap = true);
+  Text(std::string_view str, bool rawText = false, int maxWidth = 0, bool wordWrap = true);
   virtual ~Text();
-  void assignFont(FontRef argFnt)
-  {
-    fnt=argFnt;
+  void assignFont(FontRef argFnt) {
+    fnt = argFnt;
     prepare(rawText);
   }
-  void setText(const char* str,bool rawText=false,int maxWidth=0, bool wordWrap=true);
-  void setPosition(const Pos& argPos)
-  {
-    pos=argPos;
+  void setText(std::string_view str, bool rawText = false, int maxWidth = 0, bool wordWrap = true);
+  void setPosition(const Pos& argPos) {
+    pos = argPos;
   }
-  const Pos& getPosition()const
-  {
+  const Pos& getPosition() const {
     return pos;
   }
-  void setColor(const Color& argClr)
-  {
-    clr=argClr;
+  void setColor(const Color& argClr) {
+    clr = argClr;
     prepare(rawText);
   }
   void draw();
   void reload();
 
-  int getWidth()const
-  {
+  int getWidth() const {
     return width;
   }
 
-  int getHeight()const
-  {
+  int getHeight() const {
     return height;
   }
 
-  void updateColors(const ClrVector& clrs,int from=0,int to=-1);
-  const ClrVector& getColors()const
-  {
+  void updateColors(const ClrVector& clrs, int from = 0, int to = -1);
+  const ClrVector& getColors() const {
     return vb.getCBuf();
   }
 
-  void getLetterExtent(size_t idx,Pos& argPos,Pos& argSize);
-  size_t getTextLength()const
-  {
+  void getLetterExtent(size_t idx, Pos& argPos, Pos& argSize);
+  size_t getTextLength() const {
     return str.getLength();
   }
 
-  size_t getLinesCount()const
-  {
+  size_t getLinesCount() const {
     return linesCount;
   }
 
-  const std::vector<size_t>& getLinesStart()const
-  {
+  const std::vector<size_t>& getLinesStart() const {
     return linesStart;
   }
 
-  const UString& getUString()const
-  {
+  const UString& getUString() const {
     return str;
   }
 
-  FontRef getFont()
-  {
+  FontRef getFont() {
     return fnt;
   }
 
@@ -99,7 +86,4 @@ protected:
 
 typedef ReferenceTmpl<Text> TextRef;
 
-
-}
-
-#endif
+}  // namespace glider
