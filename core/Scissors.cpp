@@ -1,21 +1,20 @@
 #include "Scissors.hpp"
-#include "SysHeaders.hpp"
+
 #include "GLState.hpp"
+#include "SysHeaders.hpp"
 
-namespace glider{
+namespace glider {
 
-void Scissors::draw()
-{
+void Scissors::draw() {
   state.enableScissors(rect);
   obj->draw();
   state.disableScissors();
 }
 
-void Scissors::draw(Drawable* argObj)
-{
+void Scissors::draw(Drawable* argObj) {
   state.enableScissors(rect);
   argObj->draw();
   state.disableScissors();
 }
 
-}
+}  // namespace glider

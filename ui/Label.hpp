@@ -11,7 +11,7 @@ public:
   using Ref = ReferenceTmpl<Label>;
   Label(std::string_view argCaption = {}, std::string_view argName = {});
 
-  void assignFont(FontRef argFont) {
+  void assignFont(Font::Ref argFont) {
     caption.assignFont(argFont);
   }
   void setColor(Color clr) {

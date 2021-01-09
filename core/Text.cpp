@@ -12,7 +12,7 @@ using std::fpos;
 
 namespace glider {
 
-Text::Text(FontRef argFnt, std::string_view argStr, bool argRawText, int argMaxWidth, bool argWordWrap) {
+Text::Text(Font::Ref argFnt, std::string_view argStr, bool argRawText, int argMaxWidth, bool argWordWrap) {
   width = 0;
   height = 0;
   rawText = argRawText;

@@ -45,6 +45,7 @@ public:
 protected:
   class WindowTitle : public UIContainer {
   public:
+    using Ref = ReferenceTmpl<WindowTitle>;
     WindowTitle() : dragging(false) {
     }
     void draw();
@@ -55,19 +56,18 @@ protected:
     void onMouseButtonUp(const MouseEvent& me);
     void onMouseMove(const MouseEvent& me);
   };
-  typedef ReferenceTmpl<WindowTitle> WindowTitleRef;
   class WindowClient : public UIContainer {
   public:
+    using Ref = ReferenceTmpl<WindowClient>;
     void draw();
     void onObjectResize();
     Rectangle rect;
   };
-  typedef ReferenceTmpl<WindowClient> WindowClientRef;
-  WindowTitleRef title;
-  WindowClientRef client;
+  WindowTitle::Ref title;
+  WindowClient::Ref client;
   Label::Ref titleText;
-  RectangleRef frame;
-  RectangleRef resizer;
+  Rectangle::Ref frame;
+  Rectangle::Ref resizer;
   bool resizing;
   bool resizable;
   void onMouseButtonDown(const MouseEvent& me);

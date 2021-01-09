@@ -1,11 +1,10 @@
-#ifndef __GLIDER_KEYBOARD_HPP__
-#define __GLIDER_KEYBOARD_HPP__
+#pragma once
 
-namespace glider{
+namespace glider {
 
-namespace keyboard{
+namespace keyboard {
 
-enum KeySymbol{
+enum KeySymbol {
   GK_UNKNOWN,
   GK_A,
   GK_B,
@@ -249,31 +248,28 @@ enum KeySymbol{
   GK_APP2
 };
 
-
-enum KeyModifier{
-  GK_MOD_NONE     = 0x0000,
-  GK_MOD_LSHIFT   = 0x0001,
-  GK_MOD_RSHIFT   = 0x0002,
-  GK_MOD_SHIFT    = GK_MOD_LSHIFT|GK_MOD_RSHIFT,
-  GK_MOD_LCTRL    = 0x0040,
-  GK_MOD_RCTRL    = 0x0080,
-  GK_MOD_CTRL     = GK_MOD_LCTRL|GK_MOD_RCTRL,
-  GK_MOD_LALT     = 0x0100,
-  GK_MOD_RALT     = 0x0200,
-  GK_MOD_ALT      = GK_MOD_LALT|GK_MOD_RALT,
-  GK_MOD_LMETA    = 0x0400,
-  GK_MOD_RMETA    = 0x0800,
-  GK_MOD_META     = GK_MOD_LMETA|GK_MOD_RMETA,
-  GK_MOD_NUM      = 0x1000,
-  GK_MOD_CAPS     = 0x2000,
-  GK_MOD_MODE     = 0x4000,
+enum KeyModifier {
+  GK_MOD_NONE = 0x0000,
+  GK_MOD_LSHIFT = 0x0001,
+  GK_MOD_RSHIFT = 0x0002,
+  GK_MOD_SHIFT = GK_MOD_LSHIFT | GK_MOD_RSHIFT,
+  GK_MOD_LCTRL = 0x0040,
+  GK_MOD_RCTRL = 0x0080,
+  GK_MOD_CTRL = GK_MOD_LCTRL | GK_MOD_RCTRL,
+  GK_MOD_LALT = 0x0100,
+  GK_MOD_RALT = 0x0200,
+  GK_MOD_ALT = GK_MOD_LALT | GK_MOD_RALT,
+  GK_MOD_LMETA = 0x0400,
+  GK_MOD_RMETA = 0x0800,
+  GK_MOD_META = GK_MOD_LMETA | GK_MOD_RMETA,
+  GK_MOD_NUM = 0x1000,
+  GK_MOD_CAPS = 0x2000,
+  GK_MOD_MODE = 0x4000,
   GK_MOD_RESERVED = 0x8000
 };
 
 KeySymbol scanCodeToKeySymbol(int scanCode);
-}
+}  // namespace keyboard
 const char* getModName(keyboard::KeyModifier mod);
 const char* getKeyName(keyboard::KeySymbol key);
-}
-
-#endif
+}  // namespace glider

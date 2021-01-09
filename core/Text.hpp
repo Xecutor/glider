@@ -13,10 +13,12 @@ namespace glider {
 
 class Text : public Drawable {
 public:
-  Text(FontRef fnt = {}, std::string_view str = {}, bool rawText = false, int maxWidth = 0, bool wordWrap = true);
+  using Ref = ReferenceTmpl<Text>;
+
+  Text(Font::Ref fnt = {}, std::string_view str = {}, bool rawText = false, int maxWidth = 0, bool wordWrap = true);
   Text(std::string_view str, bool rawText = false, int maxWidth = 0, bool wordWrap = true);
   virtual ~Text();
-  void assignFont(FontRef argFnt) {
+  void assignFont(Font::Ref argFnt) {
     fnt = argFnt;
     prepare(rawText);
   }
@@ -64,14 +66,14 @@ public:
     return str;
   }
 
-  FontRef getFont() {
+  Font::Ref getFont() {
     return fnt;
   }
 
 protected:
   Pos pos;
   Color clr;
-  FontRef fnt;
+  Font::Ref fnt;
   UString str;
   bool rawText;
   int maxWidth;
@@ -83,7 +85,5 @@ protected:
   VertexBuffer vb;
   void prepare(bool rawText);
 };
-
-typedef ReferenceTmpl<Text> TextRef;
 
 }  // namespace glider

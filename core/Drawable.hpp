@@ -6,9 +6,8 @@ namespace glider {
 
 class Drawable : public Managed {
 public:
+  using Ref = ReferenceTmpl<Drawable>;
   virtual void draw() = 0;
 };
-
-typedef ReferenceTmpl<Drawable> DrawableRef;
 
 }  // namespace glider

@@ -1,34 +1,26 @@
-#ifndef __GLIDER_UI_PICTURE_HPP__
-#define __GLIDER_UI_PICTURE_HPP__
+#pragma once
 
-#include "UIObject.hpp"
 #include "Image.hpp"
+#include "UIObject.hpp"
 
-namespace glider{
-namespace ui{
+namespace glider::ui {
 
-class Picture:public UIObject{
+class Picture : public UIObject {
 public:
+  using Ref = ReferenceTmpl<Picture>;
   void draw();
-  void assignImage(Image* argImage)
-  {
-    image=argImage;
+  void assignImage(Image* argImage) {
+    image = argImage;
   }
-  Image& getImage()
-  {
+  Image& getImage() {
     return *image;
   }
-  const Image& getImage()const
-  {
+  const Image& getImage() const {
     return *image;
   }
+
 protected:
-  ImageRef image;
+  Image::Ref image;
 };
 
-typedef ReferenceTmpl<Picture> PictureRef;
-
-}
-}
-
-#endif
+}  // namespace glider::ui

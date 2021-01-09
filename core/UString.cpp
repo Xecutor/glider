@@ -9,7 +9,6 @@ UString::UString(const char* argStr, size_t argLength) : UString() {
   if (bytes > 0) {
     capacity = argLength + 1;
     str = new char[capacity];
-    fprintf(stderr, "new1 %p[%zu]\n", str, capacity);
     memcpy(str, argStr, bytes);
     str[bytes] = 0;
     updateLength();
@@ -21,7 +20,6 @@ UString::UString(const UString& argStr) {
   bytes = argStr.bytes;
   capacity = argStr.capacity;
   str = new char[capacity];
-  fprintf(stderr, "new2 %p[%zu]\n", str, capacity);
   memcpy(str, argStr.str, capacity);
   symbols = argStr.symbols;
   modified = false;
@@ -33,7 +31,6 @@ UString::UString(UString&& argStr) noexcept {
   str = argStr.str;
   symbols = argStr.symbols;
   modified = argStr.modified;
-  fprintf(stderr, "move %p[%zu]\n", str, capacity);
   argStr.str = nullptr;
   argStr.symbols = 0;
   argStr.capacity = 0;
@@ -57,7 +54,6 @@ UString& UString::operator=(std::string_view argStr) {
     capacity = bytes + 1;
     deleteStr();
     str = new char[capacity];
-    fprintf(stderr, "new3 %p[%zu]\n", str, capacity);
   }
   memcpy(str, argStr.data(), argStr.length());
   str[bytes] = 0;
@@ -77,7 +73,6 @@ UString& UString::operator=(const UString& argStr) {
     capacity = bytes + 1;
     deleteStr();
     str = new char[capacity];
-    fprintf(stderr, "new4 %p[%zu]\n", str, capacity);
   }
   memcpy(str, argStr.str, argStr.bytes + 1);
   modified = true;
@@ -91,7 +86,6 @@ UString& UString::operator=(UString&& argStr) {
   str = argStr.str;
   symbols = argStr.symbols;
   modified = false;
-  fprintf(stderr, "move2 %p[%zu]\n", str, capacity);
   argStr.str = nullptr;
   argStr.symbols = 0;
   argStr.capacity = 0;
@@ -105,7 +99,6 @@ UString& UString::operator+=(const UString& rhs) {
     capacity = bytes + rhs.bytes;
     capacity += capacity / 2 + 1;
     char* newstr = new char[capacity];
-    fprintf(stderr, "new+= %p[%zu]\n", newstr, capacity);
     memcpy(newstr, str, bytes);
     deleteStr();
     str = newstr;

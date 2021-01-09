@@ -1,5 +1,4 @@
-#ifndef __GLIDER_ENGINE_HPP__
-#define __GLIDER_ENGINE_HPP__
+#pragma once
 
 #include "Drawable.hpp"
 #include "EventHandler.hpp"
@@ -7,13 +6,13 @@
 
 struct SDL_Window;
 
-namespace glider{
+namespace glider {
 
-class Engine{
+class Engine {
 public:
   Engine();
-  void selectResolution(int argWidth,int argHeight,bool argFullScreen);
-  void updateResolution(int argWidth,int argHeight);
+  void selectResolution(int argWidth, int argHeight, bool argFullScreen);
+  void updateResolution(int argWidth, int argHeight);
   void setResolution();
   void init();
   void setCaption(const char* argTitle);
@@ -22,74 +21,60 @@ public:
 
   void draw(Drawable* obj);
 
-  int getWidth()
-  {
+  int getWidth() {
     return screenWidth;
   }
 
-  int getHeight()
-  {
+  int getHeight() {
     return screenHeight;
   }
 
-  void setVSync(bool val=true);
-  void enableKeyboardRepeat(int delay=500,int interval=30);
+  void setVSync(bool val = true);
+  void enableKeyboardRepeat(int delay = 500, int interval = 30);
 
   void loop(Drawable* obj);
-  void exitLoop()
-  {
-    loopExitFlag=true;
+  void exitLoop() {
+    loopExitFlag = true;
   }
-  void exitApp()
-  {
-    appExitFlag=true;
+  void exitApp() {
+    appExitFlag = true;
   }
 
-  bool isAppExit()const
-  {
+  bool isAppExit() const {
     return appExitFlag;
   }
 
-  bool isLoopExit()const
-  {
+  bool isLoopExit() const {
     return loopExitFlag;
   }
 
-  void assignHandler(EventHandler* argHandler)
-  {
-    handler=argHandler;
+  void assignHandler(EventHandler* argHandler) {
+    handler = argHandler;
   }
 
-  void setFpsLimit(int argTargetFps)
-  {
+  void setFpsLimit(int argTargetFps) {
     setVSync(false);
-    if(argTargetFps>=0)
-    {
-      targetFps=argTargetFps;
-      limitFps=true;
-    }else
-    {
-      limitFps=false;
+    if (argTargetFps >= 0) {
+      targetFps = argTargetFps;
+      limitFps = true;
+    } else {
+      limitFps = false;
     }
   }
 
   void setClearColor(const Color& argColor);
 
-  const Color& getClearColor()const
-  {
+  const Color& getClearColor() const {
     return clearColor;
   }
 
-  void setDefaultFont(FontRef fnt)
-  {
-    defaultFont=fnt;
+  void setDefaultFont(Font::Ref fnt) {
+    defaultFont = fnt;
   }
 
-  FontRef getDefaultFont()
-  {
+  Font::Ref getDefaultFont() {
     return defaultFont;
   }
-
 
 protected:
   bool initialized;
@@ -107,7 +92,7 @@ protected:
   bool limitFps;
   int targetFps;
 
-  FontRef defaultFont;
+  Font::Ref defaultFont;
 
   EventHandler* handler;
 
@@ -117,6 +102,4 @@ protected:
 
 extern Engine engine;
 
-}
-
-#endif
+}  // namespace glider

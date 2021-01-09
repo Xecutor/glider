@@ -1,13 +1,10 @@
-#ifndef __GLIDER_CORE_CLIPBOARD_HPP__
-#define __GLIDER_CORE_CLIPBOARD_HPP__
+#pragma once
 
 #include <string>
 
-namespace glider{
+namespace glider {
 
 void copyToClipboard(const char* utf8text);
 std::string pasteFromClipboard();
 
-}
-
-#endif
+}  // namespace glider

@@ -1,23 +1,19 @@
-#ifndef __GLIDER_UI_UIANIMATION_HPP__
-#define __GLIDER_UI_UIANIMATION_HPP__
+#pragma once
 
 #include "Managed.hpp"
 
-namespace glider{
-namespace ui{
+namespace glider::ui {
 
-class UIAnimation:public Managed{
+class UIAnimation : public Managed {
 public:
-  virtual void onStart(){}
-  virtual void onEnd(){}
-  virtual bool update(int mcsec)=0;
-  virtual bool deleteOnFinish()
-  {
+  virtual void onStart() {
+  }
+  virtual void onEnd() {
+  }
+  virtual bool update(int mcsec) = 0;
+  virtual bool deleteOnFinish() {
     return true;
   }
 };
 
-}
-}
-
-#endif
+}  // namespace glider::ui

@@ -59,7 +59,7 @@ protected:
   };
   typedef std::set<UIObjectsList::iterator, IteratorComparator> SelSet;
   SelSet selSet;
-  ScrollBarRef sb;
+  ScrollBar::Ref sb;
   Rectangle bgRect, selRect;
   float totalHeight;
   bool multiSel;
@@ -97,8 +97,6 @@ protected:
   float calcHeight(UIObjectsList::iterator from, UIObjectsList::iterator to);
   void updateScroll();
 };
-
-typedef ReferenceTmpl<ListBox> ListBoxRef;
 
 class MultiColumnListItem : public UIContainer {
 public:

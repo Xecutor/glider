@@ -1,10 +1,3 @@
-/*
- * Splitter.cpp
- *
- *  Created on: 11 ñåíò. 2016 ã.
- *      Author: konst
- */
-
 #include "Splitter.hpp"
 
 #include "UIConfig.hpp"

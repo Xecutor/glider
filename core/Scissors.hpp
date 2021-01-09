@@ -1,31 +1,26 @@
-#ifndef __GLIDER_SCISSORS_HPP__
-#define __GLIDER_SCISSORS_HPP__
+#pragma once
 
-#include "Utility.hpp"
 #include "Drawable.hpp"
+#include "Utility.hpp"
 
-namespace glider{
+namespace glider {
 
-class Scissors:public Drawable{
+class Scissors : public Drawable {
 public:
-  Scissors():obj(0){}
-  Scissors(const Rect& argRect):rect(argRect),obj(0)
-  {
-
+  Scissors() : obj(0) {
+  }
+  Scissors(const Rect& argRect) : rect(argRect), obj(0) {
   }
 
-  void assignObj(Drawable* argObj)
-  {
-    obj=argObj;
+  void assignObj(Drawable* argObj) {
+    obj = argObj;
   }
 
-  void setRect(const Rect& argRect)
-  {
-    rect=argRect;
+  void setRect(const Rect& argRect) {
+    rect = argRect;
   }
 
-  const Rect& getRect()const
-  {
+  const Rect& getRect() const {
     return rect;
   }
 
@@ -34,9 +29,7 @@ public:
 
 protected:
   Rect rect;
-  DrawableRef obj;
+  Drawable::Ref obj;
 };
 
-}
-
-#endif
+}  // namespace glider

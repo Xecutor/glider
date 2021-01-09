@@ -1,38 +1,27 @@
-#ifndef __GLIDER_EVENTHANDLER_HPP__
-#define __GLIDER_EVENTHANDLER_HPP__
+#pragma once
 
 #include "Keyboard.hpp"
 #include "Utility.hpp"
 
-namespace glider{
+namespace glider {
 
-enum MouseEventType{
-  metMove,
-  metButtonPress,
-  metButtonRelease,
-  metScroll
-};
+enum MouseEventType { metMove, metButtonPress, metButtonRelease, metScroll };
 
-struct MouseEvent{
+struct MouseEvent {
   char deviceIndex;
   MouseEventType eventType;
   int buttonsState;
   int eventButton;
-  int x,y;
-  int xRel,yRel;
-  Posi<int> getPos()const
-  {
-    return {x,y};
+  int x, y;
+  int xRel, yRel;
+  Posi<int> getPos() const {
+    return {x, y};
   }
 };
 
-enum KeyboardEventType{
-  ketPress,
-  ketRelease,
-  ketInput
-};
+enum KeyboardEventType { ketPress, ketRelease, ketInput };
 
-struct KeyboardEvent{
+struct KeyboardEvent {
   KeyboardEventType eventType;
   keyboard::KeyModifier keyMod;
   keyboard::KeySymbol keySym;
@@ -40,18 +29,21 @@ struct KeyboardEvent{
   bool repeat;
 };
 
-class EventHandler{
+class EventHandler {
 public:
-  virtual ~EventHandler(){}
-  virtual void onActiveChange(bool active){}
-  virtual void onMouseEvent(MouseEvent& argEvent){}
-  virtual void onKeyboardEvent(KeyboardEvent& argEvent){}
+  virtual ~EventHandler() {
+  }
+  virtual void onActiveChange(bool active) {
+  }
+  virtual void onMouseEvent(MouseEvent& argEvent) {
+  }
+  virtual void onKeyboardEvent(KeyboardEvent& argEvent) {
+  }
   virtual void onResize(){};
-  virtual void onQuit()=0;
-  virtual void onFrameUpdate(int mcsec)=0;
-  virtual void onUserEvent(void* data1,void* data2){}
+  virtual void onQuit() = 0;
+  virtual void onFrameUpdate(int mcsec) = 0;
+  virtual void onUserEvent(void* data1, void* data2) {
+  }
 };
 
-}
-
-#endif
+}  // namespace glider

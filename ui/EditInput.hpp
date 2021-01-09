@@ -1,49 +1,40 @@
-#ifndef __GLIDER_UI_EDITLINE_HPP__
-#define __GLIDER_UI_EDITLINE_HPP__
-#include "UIObject.hpp"
+#pragma once
+
 #include <string>
+
 #include "Line.hpp"
-#include "Text.hpp"
 #include "Rectangle.hpp"
+#include "Text.hpp"
 #include "UIAnimation.hpp"
+#include "UIObject.hpp"
 
-namespace glider{
-namespace ui{
+namespace glider::ui {
 
-enum EditInputEventType{
-  eiOnAccept,
-  eiOnCancel,
-  eiOnModify,
-  eiCount
-};
+enum EditInputEventType { eiOnAccept, eiOnCancel, eiOnModify, eiCount };
 
-class EditInput:public UIObject{
+class EditInput : public UIObject {
 public:
-  EditInput(const char* name=0);
+  EditInput(const char* name = 0);
   void draw();
   void setValue(const std::string& argValue);
-  const std::string& getValue()const
-  {
+  const std::string& getValue() const {
     return value;
   }
-  int getIntValue()const
-  {
-    int rv=0;
-    sscanf(value.c_str(),"%d",&rv);
+  int getIntValue() const {
+    int rv = 0;
+    sscanf(value.c_str(), "%d", &rv);
     return rv;
   }
-  size_t getCurPos()const
-  {
+  size_t getCurPos() const {
     return curPos;
   }
-  void setCurPos(size_t argCurPos,bool extendSelection=false);
+  void setCurPos(size_t argCurPos, bool extendSelection = false);
   void insertText(const char* txt);
   void resetSelection();
 
   using UIObject::setEventHandler;
-  EditInput& setEventHandler(EditInputEventType et,UICallBack cb)
-  {
-    eiCb[et]=cb;
+  EditInput& setEventHandler(EditInputEventType et, UICallBack cb) {
+    eiCb[et] = cb;
     return *this;
   }
 
@@ -60,61 +51,52 @@ protected:
 
   void deleteSymbol(int dir);
 
-  class CursorBlinkAnimation:public UIAnimation{
+  class CursorBlinkAnimation : public UIAnimation {
   public:
-    CursorBlinkAnimation():active(false){}
+    CursorBlinkAnimation() : active(false) {
+    }
     EditInput* ei = nullptr;
     bool active;
-    void onStart()
-    {
-      active=true;
+    void onStart() {
+      active = true;
     }
-    void onEnd()
-    {
-      active=false;
+    void onEnd() {
+      active = false;
     }
-    bool update(int mcsec)
-    {
+    bool update(int mcsec) {
       return active && ei->cursorBlinkAnimation(mcsec);
     }
-    bool deleteOnFinish()
-    {
+    bool deleteOnFinish() {
       return false;
     }
   };
   CursorBlinkAnimation curBlinkAni;
   int lastCurBlink;
   size_t curPos;
-  size_t selStart,selEnd;
-  bool haveSelection()const
-  {
-    return selStart!=selEnd;
+  size_t selStart, selEnd;
+  bool haveSelection() const {
+    return selStart != selEnd;
   }
   bool isCurVisible;
   bool cursorBlinkAnimation(int mcsec);
   int mouseXToCurPos(int x);
-  struct ScrollAnimation:public UIAnimation{
+  struct ScrollAnimation : public UIAnimation {
   public:
-    ScrollAnimation():ei(0),isCancelled(false)
-    {
+    ScrollAnimation() : ei(0), isCancelled(false) {
     }
     EditInput* ei;
     bool isCancelled;
-    bool update(int mcsec)
-    {
-      if(!isCancelled)
-      {
+    bool update(int mcsec) {
+      if (!isCancelled) {
         ei->scroll(mcsec);
       }
       return !isCancelled;
     }
-    bool deleteOnFinish()
-    {
+    bool deleteOnFinish() {
       return false;
     }
-    void cancel()
-    {
-      isCancelled=true;
+    void cancel() {
+      isCancelled = true;
     }
   };
   ScrollAnimation scrollAni;
@@ -131,10 +113,6 @@ protected:
   void onMouseMove(const MouseEvent& me);
 
   void onObjectResize();
-
 };
 
-}
-}
-
-#endif
+}  // namespace glider::ui

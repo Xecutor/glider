@@ -1,144 +1,135 @@
 #include "VertexBuffer.hpp"
-#include "SysHeaders.hpp"
+
 #include "GLState.hpp"
+#include "SysHeaders.hpp"
 
-namespace glider{
+namespace glider {
 
-VertexBuffer::~VertexBuffer()
-{
-  if(vbo)
-  {
-    glDeleteBuffers(1,&vbo);
+VertexBuffer::~VertexBuffer() {
+  if (vbo) {
+    glDeleteBuffers(1, &vbo);
   }
 }
 
-
-void VertexBuffer::draw()
-{
-  if(!vbo || vbosize==0)
-  {
+void VertexBuffer::draw() {
+  if (!vbo || vbosize == 0) {
     return;
   }
-  if(tenabled)
-  {
+  if (tenabled) {
     state.enableTexture();
-  }else
-  {
+  } else {
     state.disableTexture();
   }
-  if(needIdent)
-  {
+  if (needIdent) {
     state.loadIdentity();
   }
   GLCHK(glBindBuffer(GL_ARRAY_BUFFER, vbo));
   GLCHK(glEnableClientState(GL_VERTEX_ARRAY));
-  if(tenabled)
-  {
+  if (tenabled) {
     GLCHK(glEnableClientState(GL_TEXTURE_COORD_ARRAY));
   }
-  if(cenabled)
-  {
+  if (cenabled) {
     GLCHK(glEnableClientState(GL_COLOR_ARRAY));
   }
   GLCHK(glVertexPointer(2, GL_FLOAT, 0, 0));
-  if(tenabled)
-  {
-    GLCHK(glTexCoordPointer(2,GL_FLOAT,0,(void*)(vbufSize())));
+  if (tenabled) {
+    GLCHK(glTexCoordPointer(2, GL_FLOAT, 0, (void*)(vbufSize())));
   }
-  if(cenabled)
-  {
-    GLCHK(glColorPointer(4,GL_FLOAT,0,(void*)(vbufSize()+(tenabled?tbufSize():0))));
+  if (cenabled) {
+    GLCHK(glColorPointer(4, GL_FLOAT, 0, (void*)(vbufSize() + (tenabled ? tbufSize() : 0))));
   }
-  int p=GL_QUADS;
-  switch(primitive)
-  {
-    case pPoints:p=GL_POINTS;break;
-    case pLines:p=GL_LINES;break;
-    case pLinesStrip:p=GL_LINE_STRIP;break;
-    case pLinesLoop:p=GL_LINE_LOOP;break;
-    case pTriangles:p=GL_TRIANGLES;break;
-    case pTriangleStrip:p=GL_TRIANGLE_STRIP;break;
-    case pTriangleFan:p=GL_TRIANGLE_FAN;break;
-    case pQuads:p=GL_QUADS;break;
-    case pQuadStrip:p=GL_QUAD_STRIP;break;
-    case pPolygon:p=GL_POLYGON;break;
+  int p = GL_QUADS;
+  switch (primitive) {
+    case pPoints:
+      p = GL_POINTS;
+      break;
+    case pLines:
+      p = GL_LINES;
+      break;
+    case pLinesStrip:
+      p = GL_LINE_STRIP;
+      break;
+    case pLinesLoop:
+      p = GL_LINE_LOOP;
+      break;
+    case pTriangles:
+      p = GL_TRIANGLES;
+      break;
+    case pTriangleStrip:
+      p = GL_TRIANGLE_STRIP;
+      break;
+    case pTriangleFan:
+      p = GL_TRIANGLE_FAN;
+      break;
+    case pQuads:
+      p = GL_QUADS;
+      break;
+    case pQuadStrip:
+      p = GL_QUAD_STRIP;
+      break;
+    case pPolygon:
+      p = GL_POLYGON;
+      break;
   }
-  GLCHK(glDrawArrays(p,0,static_cast<GLsizei>(size)));
-  if(cenabled)
-  {
+  GLCHK(glDrawArrays(p, 0, static_cast<GLsizei>(size)));
+  if (cenabled) {
     GLCHK(glDisableClientState(GL_COLOR_ARRAY));
   }
-  if(tenabled)
-  {
+  if (tenabled) {
     GLCHK(glDisableClientState(GL_TEXTURE_COORD_ARRAY));
   }
   GLCHK(glDisableClientState(GL_VERTEX_ARRAY));
   GLCHK(glBindBuffer(GL_ARRAY_BUFFER, 0));
-
 }
 
+void VertexBuffer::update(int updateFlags, int from, int to) {
+  size_t newvbosize = vbufSize() + (tenabled ? tbufSize() : 0) + (cenabled ? cbufSize() : 0);
 
-void VertexBuffer::update(int updateFlags,int from,int to)
-{
-  size_t newvbosize=vbufSize()+(tenabled?tbufSize():0)+(cenabled?cbufSize():0);
-
-  size_t mx=vbuf.size();
-  if(tenabled && tbuf.size()<mx)
-  {
-    mx=tbuf.size();
+  size_t mx = vbuf.size();
+  if (tenabled && tbuf.size() < mx) {
+    mx = tbuf.size();
   }
-  if(cenabled && cbuf.size()<mx)
-  {
-    mx=cbuf.size();
+  if (cenabled && cbuf.size() < mx) {
+    mx = cbuf.size();
   }
-  if(from>mx)
-  {
+  if (from > mx) {
     return;
   }
-  if(to==-1 || to>mx)
-  {
-    to=static_cast<int>(mx);
+  if (to == -1 || to > mx) {
+    to = static_cast<int>(mx);
   }
-  if(size!=mx && autoSize)
-  {
-    size=mx;
+  if (size != mx && autoSize) {
+    size = mx;
   }
 
-  if(size==0)return;
+  if (size == 0)
+    return;
 
-  if(newvbosize!=vbosize)
-  {
-    if(vbo)
-    {
-      GLCHK(glDeleteBuffers(1,&vbo));
+  if (newvbosize != vbosize) {
+    if (vbo) {
+      GLCHK(glDeleteBuffers(1, &vbo));
     }
-    GLCHK(glGenBuffers(1,&vbo));
+    GLCHK(glGenBuffers(1, &vbo));
     GLCHK(glBindBuffer(GL_ARRAY_BUFFER, vbo));
-    vbosize=newvbosize;
+    vbosize = newvbosize;
     GLCHK(glBufferData(GL_ARRAY_BUFFER, vbosize, 0, GL_DYNAMIC_DRAW));
-  }else
-  {
+  } else {
     GLCHK(glBindBuffer(GL_ARRAY_BUFFER, vbo));
   }
-  if(updateFlags&ufVertices)
-  {
-    GLCHK(glBufferSubData(GL_ARRAY_BUFFER, vbufSize(from),vbufSize(to-from), &vbuf[from]));
+  if (updateFlags & ufVertices) {
+    GLCHK(glBufferSubData(GL_ARRAY_BUFFER, vbufSize(from), vbufSize(to - from), &vbuf[from]));
   }
-  size_t offset=vbufSize();
-  if(tenabled)
-  {
-    if(updateFlags&ufTexture)
-    {
-      GLCHK(glBufferSubData(GL_ARRAY_BUFFER, offset+tbufSize(from),tbufSize(to-from), &tbuf[from]));
+  size_t offset = vbufSize();
+  if (tenabled) {
+    if (updateFlags & ufTexture) {
+      GLCHK(glBufferSubData(GL_ARRAY_BUFFER, offset + tbufSize(from), tbufSize(to - from), &tbuf[from]));
     }
-    offset+=tbufSize();
+    offset += tbufSize();
   }
-  if(cenabled && (updateFlags&ufColors))
-  {
-    GLCHK(glBufferSubData(GL_ARRAY_BUFFER, offset+cbufSize(from),cbufSize(to-from), &cbuf[from]));
+  if (cenabled && (updateFlags & ufColors)) {
+    GLCHK(glBufferSubData(GL_ARRAY_BUFFER, offset + cbufSize(from), cbufSize(to - from), &cbuf[from]));
   }
   GLCHK(glBindBuffer(GL_ARRAY_BUFFER, 0));
-
 }
 
-}
+}  // namespace glider

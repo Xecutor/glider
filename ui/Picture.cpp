@@ -1,17 +1,16 @@
 #include "Picture.hpp"
+
 #include "GLState.hpp"
 
-namespace glider{
-namespace ui{
+namespace glider {
+namespace ui {
 
-void Picture::draw()
-{
-  if(image.get())
-  {
+void Picture::draw() {
+  if (image.get()) {
     RelOffsetGuard rg(pos);
     image->draw();
   }
 }
 
-}
-}
+}  // namespace ui
+}  // namespace glider

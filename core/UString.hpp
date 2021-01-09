@@ -50,7 +50,6 @@ protected:
 
   void deleteStr() {
     if (str) {
-      fprintf(stderr, "del %p\n", str);
       delete[] str;
       str = nullptr;
     }

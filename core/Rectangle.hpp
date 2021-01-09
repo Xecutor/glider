@@ -1,47 +1,42 @@
-#ifndef __GLIDER_RECTANGLE_HPP__
-#define __GLIDER_RECTANGLE_HPP__
+#pragma once
 
 #include "Drawable.hpp"
 #include "Utility.hpp"
 
-namespace glider{
+namespace glider {
 
-class Rectangle:public Drawable{
+class Rectangle : public Drawable {
 public:
-  Rectangle():fill(true){}
-  Rectangle(const Rect& argRect,const Color& argColor,bool argFill=true):pos(argRect.pos),size(argRect.size),clr(argColor),fill(argFill)
-  {
+  using Ref = ReferenceTmpl<Rectangle>;
 
+  Rectangle() : fill(true) {
   }
-  void setColor(const Color& argColor)
-  {
-    clr=argColor;
+  Rectangle(const Rect& argRect, const Color& argColor, bool argFill = true)
+      : pos(argRect.pos), size(argRect.size), clr(argColor), fill(argFill) {
   }
-  void setPosition(const Pos& argPos)
-  {
-    pos=argPos;
+  void setColor(const Color& argColor) {
+    clr = argColor;
   }
-  void setSize(const Pos& argSize)
-  {
-    size=argSize;
+  void setPosition(const Pos& argPos) {
+    pos = argPos;
   }
-  const Pos& getPosition()const
-  {
+  void setSize(const Pos& argSize) {
+    size = argSize;
+  }
+  const Pos& getPosition() const {
     return pos;
   }
-  const Pos& getSize()const
-  {
+  const Pos& getSize() const {
     return size;
   }
-  const Rect getRect()const
-  {
-    return Rect(pos,size);
+  const Rect getRect() const {
+    return Rect(pos, size);
   }
-  void setFill(bool argFill)
-  {
-    fill=argFill;
+  void setFill(bool argFill) {
+    fill = argFill;
   }
   void draw();
+
 protected:
   Pos pos;
   Pos size;
@@ -49,9 +44,4 @@ protected:
   bool fill;
 };
 
-typedef ReferenceTmpl<Rectangle> RectangleRef;
-
-
-}
-
-#endif
+}  // namespace glider

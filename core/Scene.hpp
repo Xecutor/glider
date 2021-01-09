@@ -1,32 +1,29 @@
-#ifndef __GLIDER_SCENE_HPP__
-#define __GLIDER_SCENE_HPP__
+#pragma once
 
-#include "Drawable.hpp"
 #include <list>
 
-namespace glider{
+#include "Drawable.hpp"
 
-typedef std::list<DrawableRef> DrawableObjectsList;
+namespace glider {
+
+typedef std::list<Drawable::Ref> DrawableObjectsList;
 typedef DrawableObjectsList::iterator DrawableObjectId;
 
-class Scene:public Drawable{
+class Scene : public Drawable {
 public:
   void draw();
   DrawableObjectId addObject(Drawable* argObject);
   void removeObject(DrawableObjectId id);
   void clear();
-  DrawableObjectId begin()
-  {
+  DrawableObjectId begin() {
     return objects.begin();
   }
-  DrawableObjectId end()
-  {
+  DrawableObjectId end() {
     return objects.end();
   }
+
 protected:
   DrawableObjectsList objects;
 };
 
-}
-
-#endif
+}  // namespace glider

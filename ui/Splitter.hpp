@@ -1,18 +1,9 @@
-/*
- * Splitter.hpp
- *
- *  Created on: 11 ����. 2016 �.
- *      Author: konst
- */
-
-#ifndef SRC_UI_SPLITTER_HPP_
-#define SRC_UI_SPLITTER_HPP_
+#pragma once
 
 #include "Rectangle.hpp"
 #include "UIContainer.hpp"
 
-namespace glider {
-namespace ui {
+namespace glider::ui {
 
 class Splitter : public UIContainer {
 public:
@@ -65,7 +56,4 @@ protected:
   void updateSecondPosAndSize();
 };
 
-}  // namespace ui
-}  // namespace glider
-
-#endif /* SRC_UI_SPLITTER_HPP_ */
+}  // namespace glider::ui

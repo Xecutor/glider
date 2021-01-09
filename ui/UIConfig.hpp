@@ -1,88 +1,75 @@
-#ifndef __GLIDER_UI_UICONIG_HPP__
-#define __GLIDER_UI_UICONIG_HPP__
-#include "Font.hpp"
+#pragma once
+
 #include <kst/Throw.hpp>
 #include <map>
 
-namespace glider{
-namespace ui{
+#include "Font.hpp"
 
-class UIConfig{
+namespace glider::ui {
+
+class UIConfig {
 public:
   void init();
   void shutdown();
-  FontRef getButtonFont()
-  {
+  Font::Ref getButtonFont() {
     return buttonFont;
   }
-  FontRef getLabelFont()
-  {
+  Font::Ref getLabelFont() {
     return labelFont;
   }
 
-  FontRef getWindowTitleFont()
-  {
+  Font::Ref getWindowTitleFont() {
     return windowTitleFont;
   }
 
-  FontRef getEditLineFont()
-  {
+  Font::Ref getEditLineFont() {
     return editLineFont;
   }
 
-  Color getClearColor()
-  {
+  Color getClearColor() {
     return clearColor;
   }
 
   void setClearColor(Color clr);
 
-
-  Color getEditLineFontColor()
-  {
+  Color getEditLineFontColor() {
     return editLineFontColor;
   }
 
-  float getConst(const std::string& name)
-  {
-    ConstsMap::iterator it=constsMap.find(name);
-    if(it==constsMap.end())
-    {
-      KSTHROW("Unknown constant %{}",name);
+  float getConst(const std::string& name) {
+    ConstsMap::iterator it = constsMap.find(name);
+    if (it == constsMap.end()) {
+      KSTHROW("Unknown constant %{}", name);
     }
     return it->second;
   }
 
-  void setConst(const std::string& name,float value)
-  {
-    constsMap.insert(ConstsMap::value_type(name,value));
+  void setConst(const std::string& name, float value) {
+    constsMap.insert(ConstsMap::value_type(name, value));
   }
 
-  Color getColor(const std::string& name)
-  {
-    ColorsMap::iterator it=colorsMap.find(name);
-    if(it==colorsMap.end())
-    {
-      KSTHROW("Unknown color %{}",name);
+  Color getColor(const std::string& name) {
+    ColorsMap::iterator it = colorsMap.find(name);
+    if (it == colorsMap.end()) {
+      KSTHROW("Unknown color %{}", name);
     }
     return it->second;
   }
 
-  void setColor(const std::string& name,Color value)
-  {
-    colorsMap.insert(ColorsMap::value_type(name,value));
+  void setColor(const std::string& name, Color value) {
+    colorsMap.insert(ColorsMap::value_type(name, value));
   }
 
 protected:
-  FontRef buttonFont;
-  FontRef labelFont;
-  FontRef windowTitleFont;
-  FontRef editLineFont;
+  Font::Ref buttonFont;
+  Font::Ref labelFont;
+  Font::Ref windowTitleFont;
+  Font::Ref editLineFont;
 
-  typedef std::map<std::string,float> ConstsMap;
+  typedef std::map<std::string, float> ConstsMap;
   ConstsMap constsMap;
 
-  typedef std::map<std::string,Color> ColorsMap;
+  typedef std::map<std::string, Color> ColorsMap;
   ColorsMap colorsMap;
 
   Color clearColor;
@@ -91,7 +78,4 @@ protected:
 
 extern UIConfig uiConfig;
 
-}
-}
-
-#endif
+}  // namespace glider::ui
