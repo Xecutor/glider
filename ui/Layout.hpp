@@ -19,7 +19,7 @@ class Layout : public Managed {
 public:
   using Ref = ReferenceTmpl<Layout>;
 
-  Layout(const char* code);
+  Layout(std::string_view code);
 
   struct ItemBase : Managed {
     using Ref = ReferenceTmpl<ItemBase>;
@@ -33,7 +33,7 @@ public:
     virtual void fillObjects(UIContainer* con) = 0;
     template <class T>
     T& as() {
-      return *((T*)this);
+      return *static_cast<T*>(this);
     }
   };
 
@@ -78,7 +78,7 @@ public:
     Rect r;
     ItemVector items;
 
-    Area(const char* code);
+    Area(std::string_view code);
 
     void addItem(ItemBase::Ref argItem) {
       items.push_back(argItem);
@@ -95,7 +95,7 @@ public:
   };
 
   struct Grid : ItemBase {
-    Grid(const char* code);
+    Grid(std::string_view code);
     Grid(int argWidth, int argHeight) : ItemBase(litGrid) {
       setDim(argWidth, argHeight);
       hsp = 3;

@@ -4,27 +4,38 @@
 
 #include "UIContainer.hpp"
 
-namespace glider::ui {
-
-Layout::Layout(const char* code) : main(code) {
+void customformat(kst::FormatBuffer& buf, const std::string_view& val, int w, int p) {
+  buf.Append(val.data(), val.size());
 }
 
-static const char* skipMarkup(const char* ptr) {
+namespace glider::ui {
+namespace {
+static std::string_view skipMarkup(std::string_view ptr) {
   int cnt = 0;
-  const char* org = ptr;
+  std::string_view org = ptr;
   do {
-    if (*ptr == '%' || *ptr == '#')
+    if (ptr[0] == '%' || ptr[0] == '#') {
       cnt++;
-    if (*ptr == '!')
+    }
+    if (ptr[0] == '!') {
       cnt--;
-    ++ptr;
-    if (!ptr)
+    };
+    ptr = ptr.substr(1);
+    if (ptr.empty() && cnt > 0) {
       KSTHROW("unbalanced code %s", org);
+    }
   } while (cnt > 0);
   return ptr;
 }
+}  // namespace
 
-Layout::Area::Area(const char* code) : ItemBase(litArea) {
+Layout::Layout(std::string_view code) : main(code) {
+}
+
+Layout::Area::Area(std::string_view code) : ItemBase(litArea) {
+  if (code.length() < 4) {
+    KSTHROW("Invalid code %s", code);
+  }
   hsp = 5;
   vsp = 5;
   switch (code[0]) {
@@ -78,56 +89,64 @@ Layout::Area::Area(const char* code) : ItemBase(litArea) {
     default:
       KSTHROW("Invaid area code:%s", code);
   }
-  if (code[4] == 0)
+  if (code.length() == 4) {
     return;
-  const char* ptr = code + 4;
-  if (*ptr == '[') {
+  }
+  auto ptr = code.substr(4);
+  if (!ptr.empty() && ptr[0] == '[') {
     int n;
-    if (sscanf(ptr, "[%d,%d]%n", &hsp, &vsp, &n) != 2) {
+    if (sscanf(ptr.data(), "[%d,%d]%n", &hsp, &vsp, &n) != 2) {
       KSTHROW("Invaid area code:%s", code);
     }
-    ptr += n;
+    ptr = ptr.substr(n);
   }
-  if (*ptr != ':') {
+  if (!ptr.empty() && ptr[0] != ':') {
     KSTHROW("Invaid area code:%s", code);
   }
-  ++ptr;
+  ptr = ptr.substr(1);
   std::string nm;
-  while (*ptr && *ptr != '!') {
-    if (*ptr == '%') {
-      addItem(new Area(ptr + 1));
+  while (!ptr.empty() && ptr[0] != '!') {
+    if (ptr[0] == '%') {
+      addItem(MakeRef<Area>(ptr.substr(1)));
       ptr = skipMarkup(ptr);
-      if (*ptr == ',')
-        ++ptr;
+      if (!ptr.empty() && ptr[0] == ',') {
+        ptr = ptr.substr(1);
+      }
       continue;
     }
-    if (*ptr == '#') {
-      addItem(new Layout::Grid(ptr + 1));
+    if (ptr[0] == '#') {
+      addItem(MakeRef<Layout::Grid>(ptr.substr(1)));
       ptr = skipMarkup(ptr);
-      if (*ptr == ',')
-        ++ptr;
+      if (ptr[0] == ',') {
+        ptr = ptr.substr(1);
+      }
       continue;
     }
-    const char* nameStart = ptr;
-    while (*ptr && *ptr != ',' && *ptr != '!' && *ptr != '*' && *ptr != '-' && *ptr != '|') ++ptr;
-    nm.assign(nameStart, ptr - nameStart);
+    size_t nameLen = 0;
+    while (nameLen < ptr.length() && ptr[nameLen] != ',' && ptr[nameLen] != '!' && ptr[nameLen] != '*' &&
+           ptr[nameLen] != '-' && ptr[nameLen] != '|') {
+      ++nameLen;
+    }
+    nm = ptr.substr(0, nameLen);
+    ptr = ptr.substr(nameLen);
     bool maxH = false, maxV = false;
-    if (*ptr == '*') {
+    if (!ptr.empty() && ptr[0] == '*') {
       maxH = true;
       maxV = true;
-      ++ptr;
+      ptr = ptr.substr(1);
     }
-    if (*ptr == '-') {
+    if (!ptr.empty() && ptr[0] == '-') {
       maxH = true;
-      ++ptr;
+      ptr = ptr.substr(1);
     }
-    if (*ptr == '|') {
+    if (!ptr.empty() && ptr[0] == '|') {
       maxV = true;
-      ++ptr;
+      ptr = ptr.substr(1);
     }
-    if (*ptr == ',')
-      ++ptr;
-    addItem(new Object(nm, maxH, maxV));
+    if (!ptr.empty() && ptr[0] == ',') {
+      ptr = ptr.substr(1);
+    }
+    addItem(MakeRef<Object>(nm, maxH, maxV));
   }
 }
 
@@ -188,8 +207,7 @@ void Layout::Area::update(const Pos& argPos, const Pos& argSize) {
         }
       } else if (i.lit == litObject) {
         Object& o = i.as<Object>();
-        if ((o.maximizeH && (lpm == lpmFromLeftToRight || lpm == lpmFromLeftToRight)) ||
-            (o.maximizeV && (lpm == lpmFromTopToBottom || lpm == lpmFromTopToBottom))) {
+        if ((o.maximizeH && lpm == lpmFromLeftToRight) || (o.maximizeV && lpm == lpmFromTopToBottom)) {
           fillModes.push_back(lfmMax);
           mx.push_back(idx);
           mnsz += sp;
@@ -251,7 +269,7 @@ void Layout::Area::update(const Pos& argPos, const Pos& argSize) {
           break;
       }
       i.update(pos, sz);
-      sz = i.getSize();
+      // sz = i.getSize();
       pos.*ptr += sp;
       pos.*ptr += sizes[idx];
     }
@@ -273,13 +291,13 @@ void Layout::Area::fillObjects(UIContainer* con) {
   }
 }
 
-Layout::Grid::Grid(const char* code) : ItemBase(litGrid) {
+Layout::Grid::Grid(std::string_view code) : ItemBase(litGrid) {
   hsp = 3;
   vsp = 3;
-  const char* ptr = code;
-  while (*ptr && *ptr != ':' && *ptr != '[') {
+  auto ptr = code;
+  while (!ptr.empty() && ptr[0] != ':' && ptr[0] != '[') {
     ColumnInfo ci;
-    switch (*ptr) {
+    switch (ptr[0]) {
       case 'L':
         ci.la = hlaLeft;
         break;
@@ -293,46 +311,51 @@ Layout::Grid::Grid(const char* code) : ItemBase(litGrid) {
         KSTHROW("Invaid grid code:%s", code);
     }
     colInfo.push_back(ci);
-    ++ptr;
+    ptr = ptr.substr(1);
   }
   width = static_cast<int>(colInfo.size());
-  if (*ptr == '[') {
+  if (ptr[0] == '[') {
     int n;
-    if (sscanf(ptr, "[%d,%d]%n", &hsp, &vsp, &n) != 2) {
+    if (sscanf(ptr.data(), "[%d,%d]%n", &hsp, &vsp, &n) != 2) {
       KSTHROW("Invaid area code:%s", code);
     }
-    ptr += n;
+    ptr = ptr.substr(n);
   }
-  if (*ptr != ':') {
+  if (ptr[0] != ':') {
     KSTHROW("Invaid grid code:%s", code);
   }
-  ++ptr;
+  ptr = ptr.substr(1);
   std::string nm;
   int y = 0;
-  while (*ptr && *ptr != '!') {
+  while (!ptr.empty() && ptr[0] != '!') {
     grid.resize(y + 1);
     grid[y].resize(width);
     for (int x = 0; x < width; ++x) {
-      if (*ptr == '%') {
-        setItemAt(x, y, new Area(ptr + 1));
+      if (ptr[0] == '%') {
+        setItemAt(x, y, MakeRef<Area>(ptr.substr(1)));
         ptr = skipMarkup(ptr);
         continue;
       }
-      if (*ptr == '#') {
-        setItemAt(x, y, new Grid(ptr + 1));
+      if (ptr[0] == '#') {
+        setItemAt(x, y, MakeRef<Grid>(ptr.substr(1)));
         ptr = skipMarkup(ptr);
         continue;
       }
-      const char* nameStart = ptr;
-      while (*ptr && *ptr != ',' && *ptr != '|' && *ptr != '!') ++ptr;
+      size_t nameLen = 0;
+      while (nameLen < ptr.length() && ptr[nameLen] != ',' && ptr[nameLen] != '|' && ptr[nameLen] != '!') {
+        ++nameLen;
+      }
       // if(!*ptr)KSTHROW("Invaid grid code:%s, expected separator at %d",code,(int)(ptr-code));
-      nm.assign(nameStart, ptr - nameStart);
-      setItemAt(x, y, new Object(nm));
-      if (*ptr == ',')
-        ++ptr;
+      nm = ptr.substr(0, nameLen);
+      ptr = ptr.substr(nameLen);
+      setItemAt(x, y, MakeRef<Object>(nm));
+      if (ptr[0] == ',') {
+        ptr = ptr.substr(1);
+      }
     }
-    if (*ptr == '|')
-      ++ptr;
+    if (ptr[0] == '|') {
+      ptr = ptr.substr(1);
+    }
     ++y;
   }
   height = y;

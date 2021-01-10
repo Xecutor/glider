@@ -21,9 +21,7 @@ public:
     return value;
   }
   int getIntValue() const {
-    int rv = 0;
-    sscanf(value.c_str(), "%d", &rv);
-    return rv;
+    return std::stoi(value);
   }
   size_t getCurPos() const {
     return curPos;
