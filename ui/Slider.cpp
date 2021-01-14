@@ -16,14 +16,18 @@ Slider::Slider(float argCurValue, float argMinValue, float argMaxValue)
 }
 
 void Slider::onMouseButtonDown(const MouseEvent& me) {
-  mouseDown = true;
   updateValue(me.x);
-  root->lockMouse(this);
+  if (!mouseDown) {
+    mouseDown = true;
+    root->lockMouse(this);
+  }
 }
 
 void Slider::onMouseButtonUp(const MouseEvent& me) {
-  mouseDown = false;
-  root->unlockMouse();
+  if (mouseDown) {
+    mouseDown = false;
+    root->unlockMouse();
+  }
 }
 void Slider::onMouseMove(const MouseEvent& me) {
   if (mouseDown) {
@@ -33,11 +37,16 @@ void Slider::onMouseMove(const MouseEvent& me) {
 
 void Slider::updateValue(int mx) {
   Pos apos = getAbsPos();
-  curValue = (mx - apos.x) / size.x;
+  curValue = minValue + ((mx - apos.x) / size.x) * (maxValue - minValue);
   if (curValue < minValue)
     curValue = minValue;
   if (curValue > maxValue)
     curValue = maxValue;
+
+  if (sliderCb[ToInt(SliderEventType::onChange)]) {
+    sliderCb[ToInt(SliderEventType::onChange)](UIEvent(this, ToInt(SliderEventType::onChange)));
+  }
+
   int x = (int)((curValue - minValue) * size.x / (maxValue - minValue));
   line.setSource(Pos((float)x, 0.0f));
   line.setDestination(Pos((float)x, size.y));

@@ -26,82 +26,82 @@ UIObject::UIObject(std::string_view argName) : parent(0), intTag(0) {
 }
 
 void UIObject::onMouseEnter(const MouseEvent& me) {
-  const UIEventType et = uietMouseEnter;
-  if (cbArray[et]) {
+  const UIEventType et = UIEventType::mouseEnter;
+  if (cbArray[ToInt(et)]) {
     UIEvent evt(et, me);
-    cbArray[et](evt);
+    cbArray[ToInt(et)](evt);
   }
 }
 
 void UIObject::onMouseLeave(const MouseEvent& me) {
-  const UIEventType et = uietMouseLeave;
-  if (cbArray[et]) {
+  const UIEventType et = UIEventType::mouseLeave;
+  if (cbArray[ToInt(et)]) {
     UIEvent evt(et, me);
-    cbArray[et](evt);
+    cbArray[ToInt(et)](evt);
   }
 }
 
 void UIObject::onMouseButtonDown(const MouseEvent& me) {
-  const UIEventType et = uietMouseButtonDown;
-  if (cbArray[et]) {
+  const UIEventType et = UIEventType::mouseButtonDown;
+  if (cbArray[ToInt(et)]) {
     UIEvent evt(et, me);
-    cbArray[et](evt);
+    cbArray[ToInt(et)](evt);
   }
 }
 
 void UIObject::onMouseButtonUp(const MouseEvent& me) {
-  const UIEventType et = uietMouseButtonUp;
-  if (cbArray[et]) {
+  const UIEventType et = UIEventType::mouseButtonUp;
+  if (cbArray[ToInt(et)]) {
     UIEvent evt(et, me);
-    cbArray[et](evt);
+    cbArray[ToInt(et)](evt);
   }
 }
 
 void UIObject::onMouseClick(const MouseEvent& me) {
-  const UIEventType et = uietMouseClick;
-  if (cbArray[et]) {
+  const UIEventType et = UIEventType::mouseClick;
+  if (cbArray[ToInt(et)]) {
     UIEvent evt(et, me);
-    cbArray[et](evt);
+    cbArray[ToInt(et)](evt);
   }
 }
 
 void UIObject::onMouseMove(const MouseEvent& me) {
-  const UIEventType et = uietMouseMove;
-  if (cbArray[et]) {
+  const UIEventType et = UIEventType::mouseMove;
+  if (cbArray[ToInt(et)]) {
     UIEvent evt(et, me);
-    cbArray[et](evt);
+    cbArray[ToInt(et)](evt);
   }
 }
 
 void UIObject::onMouseScroll(const MouseEvent& me) {
-  const UIEventType et = uietMouseScroll;
-  if (cbArray[et]) {
+  const UIEventType et = UIEventType::mouseScroll;
+  if (cbArray[ToInt(et)]) {
     UIEvent evt(et, me);
-    cbArray[et](evt);
+    cbArray[ToInt(et)](evt);
   }
 }
 
 void UIObject::onKeyDown(const KeyboardEvent& ke) {
-  const UIEventType et = uietKeyDown;
-  if (cbArray[et]) {
+  const UIEventType et = UIEventType::keyDown;
+  if (cbArray[ToInt(et)]) {
     UIEvent evt(et, ke);
-    cbArray[et](evt);
+    cbArray[ToInt(et)](evt);
   }
 }
 
 void UIObject::onKeyUp(const KeyboardEvent& ke) {
-  const UIEventType et = uietKeyUp;
-  if (cbArray[et]) {
+  const UIEventType et = UIEventType::keyUp;
+  if (cbArray[ToInt(et)]) {
     UIEvent evt(et, ke);
-    cbArray[et](evt);
+    cbArray[ToInt(et)](evt);
   }
 }
 
 void UIObject::onKeyPress(const KeyboardEvent& ke) {
-  const UIEventType et = uietKeyPress;
-  if (cbArray[et]) {
+  const UIEventType et = UIEventType::keyPress;
+  if (cbArray[ToInt(et)]) {
     UIEvent evt(et, ke);
-    cbArray[et](evt);
+    cbArray[ToInt(et)](evt);
   }
 }
 
@@ -117,7 +117,7 @@ void UIObject::setFocus() {
 void UIObject::removeFocus() {
   if (focused) {
     focused = false;
-    root->setKeyboardFocus(0);
+    root->setKeyboardFocus(nullptr);
     onFocusLost();
     if (parent)
       parent->removeFocus();

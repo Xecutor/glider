@@ -87,7 +87,7 @@ int GliderAppMain(int argc, char* argv[]) {
 
     engine.assignHandler(root);
     auto b = MakeRef<Button>();
-    b->setEventHandler(betOnClick, [b](const auto& event) { onClick(b, event); });
+    b->setEventHandler(ButtonEventType::onClick, [b](const auto& event) { onClick(b, event); });
     b->setName("button1");
     b->setCaption("test");
     b->setPos(Pos(100, 100));
@@ -97,7 +97,7 @@ int GliderAppMain(int argc, char* argv[]) {
     b2->setName("button2");
     b2->setCaption("Quit");
     b2->setPos(Pos(100, 100 + b->getSize().y + 5));
-    b2->setEventHandler(betOnClick, onClick2);
+    b2->setEventHandler(ButtonEventType::onClick, onClick2);
     root->addObject(b2);
 
     auto w3 = MakeRef<Window>(Pos(400, 400), Pos(300, 300), "scroller test");
@@ -118,7 +118,7 @@ int GliderAppMain(int argc, char* argv[]) {
       w3->addObject(lb);
       auto b = MakeRef<Button>("Add");
       b->setPos(Pos(202, 1));
-      b->setEventHandler(betOnClick, [w3](const auto& evt) { addClick(w3, evt); });
+      b->setEventHandler(ButtonEventType::onClick, [w3](const auto& evt) { addClick(w3, evt); });
       w3->addObject(b);
     }
     // ScrollBar* sb=new ScrollBar(100);
@@ -160,7 +160,7 @@ int GliderAppMain(int argc, char* argv[]) {
     auto b5 = MakeRef<Button>();
     b5->setName("button5");
     b5->setCaption("hello5");
-    b5->setEventHandler(betOnClick, [w](const auto& evt) { onClick3(w, evt); });
+    b5->setEventHandler(ButtonEventType::onClick, [w](const auto& evt) { onClick3(w, evt); });
     b5->setPos(Pos(10, 60));
     w2->addObject(b5);
     auto ed = MakeRef<EditInput>();

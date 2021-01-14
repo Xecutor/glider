@@ -33,7 +33,7 @@ Button::Button(std::string_view argCaption, std::string_view argName, UICallBack
     setName(argName);
   }
   if (cb) {
-    setEventHandler(betOnClick, cb);
+    setEventHandler(ButtonEventType::onClick, cb);
   }
 }
 
@@ -109,9 +109,9 @@ void Button::onMouseButtonUp(const MouseEvent& me) {
       setNormalState();
     }
     root->unlockMouse();
-    if (isInside(Pos((float)me.x, (float)me.y))) {
-      onMouseClick(me);
-    }
+    // if (isInside(Pos((float)me.x, (float)me.y))) {
+    //   onMouseClick(me);
+    // }
     buttonDown = false;
     UIObject::onMouseButtonUp(me);
   }
@@ -119,8 +119,8 @@ void Button::onMouseButtonUp(const MouseEvent& me) {
 
 void Button::onMouseClick(const MouseEvent& me) {
   if (me.eventButton == 1) {
-    if (btnCb[betOnClick]) {
-      btnCb[betOnClick](UIEvent(uietMouseClick, me));
+    if (btnCb[ToInt(ButtonEventType::onClick)]) {
+      btnCb[ToInt(ButtonEventType::onClick)](UIEvent(UIEventType::mouseClick, me));
     }
   }
   UIObject::onMouseClick(me);

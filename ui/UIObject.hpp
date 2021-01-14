@@ -19,19 +19,24 @@ class UIObject;
 class UIContainer;
 class UIRoot;
 
-enum UIEventType {
-  uietMouseMove,
-  uietMouseButtonDown,
-  uietMouseButtonUp,
-  uietMouseClick,
-  uietMouseEnter,
-  uietMouseLeave,
-  uietMouseScroll,
-  uietKeyDown,
-  uietKeyUp,
-  uietKeyPress,
-  uietOther,
-  uietCount
+template <class EnumType>
+constexpr auto ToInt(EnumType e) {
+  return static_cast<std::underlying_type_t<EnumType>>(e);
+}
+
+enum class UIEventType {
+  mouseMove,
+  mouseButtonDown,
+  mouseButtonUp,
+  mouseClick,
+  mouseEnter,
+  mouseLeave,
+  mouseScroll,
+  keyDown,
+  keyUp,
+  keyPress,
+  other,
+  count
 };
 
 struct UIEvent {
@@ -39,7 +44,7 @@ struct UIEvent {
   }
   UIEvent(UIEventType argEt, const KeyboardEvent& argKe) : et(argEt), etEx(0), ke(argKe) {
   }
-  UIEvent(UIObject* obj, uint8_t argEtEx) : et(uietOther), etEx(argEtEx), sender(obj) {
+  UIEvent(UIObject* obj, uint8_t argEtEx) : et(UIEventType::other), etEx(argEtEx), sender(obj) {
   }
   UIEventType et;
   uint8_t etEx;
@@ -50,7 +55,7 @@ struct UIEvent {
   };
 };
 
-typedef EventCallback<UIEvent> UICallBack;
+using UICallBack = EventCallback<UIEvent>;
 
 #define MKUICALLBACK(name) MKCALLBACK(name)
 
@@ -70,7 +75,7 @@ public:
   }
 
   void setEventHandler(UIEventType et, UICallBack cb) {
-    cbArray[et] = cb;
+    cbArray[ToInt(et)] = cb;
   }
 
   Rect getAbsRect() const {
@@ -193,7 +198,7 @@ protected:
   bool tabStop;
   bool visible;
 
-  UICallBack cbArray[uietCount];
+  UICallBack cbArray[ToInt(UIEventType::count)];
 
   std::string name;
 

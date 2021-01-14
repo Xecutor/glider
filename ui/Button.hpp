@@ -8,7 +8,7 @@
 
 namespace glider::ui {
 
-enum ButtonEventType { betOnClick, betCount };
+enum class ButtonEventType { onClick, count };
 
 class Button : public Control {
 public:
@@ -21,7 +21,7 @@ public:
 
   using UIObject::setEventHandler;
   Button& setEventHandler(ButtonEventType et, UICallBack cb) {
-    btnCb[et] = cb;
+    btnCb[ToInt(et)] = cb;
     return *this;
   }
 
@@ -54,7 +54,7 @@ protected:
   void startAnimation();
   bool updateAnimation(int mcs);
 
-  UICallBack btnCb[betCount];
+  UICallBack btnCb[ToInt(ButtonEventType::count)];
 
   void setHoverState();
   void setDownState();

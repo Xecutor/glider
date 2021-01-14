@@ -6,12 +6,22 @@
 
 namespace glider::ui {
 
+enum class SliderEventType { onChange, count };
+
 class Slider : public UIObject {
 public:
+  using Ref = ReferenceTmpl<Slider>;
+
   Slider(float argCurValue = 0.0, float argMinValue = 0.0, float argMaxValue = 1.0);
+
+  void setEventHandler(SliderEventType et, UICallBack cb) {
+    sliderCb[ToInt(et)] = cb;
+  }
+
   float getValue() const {
     return curValue;
   }
+
   void setValue(float argValue) {
     curValue = argValue;
   }
@@ -23,6 +33,8 @@ protected:
   Rectangle rect;
   Line line;
   bool mouseDown;
+
+  UICallBack sliderCb[ToInt(SliderEventType::count)];
 
   void updateValue(int mx);
 
