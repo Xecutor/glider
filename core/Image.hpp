@@ -51,7 +51,7 @@ public:
   Pos getScaledSize() const {
     return Pos(size.x * scaleX, size.y * scaleY);
   }
-  Color getPixel(int x, int y);
+  Color getPixel(int x, int y) const;
   void setPixel(int x, int y, Color clr);
 
 protected:

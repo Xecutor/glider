@@ -9,7 +9,7 @@ class Picture : public UIObject {
 public:
   using Ref = ReferenceTmpl<Picture>;
   void draw();
-  void assignImage(Image* argImage) {
+  void assignImage(Image::Ref argImage) {
     image = argImage;
   }
   Image& getImage() {

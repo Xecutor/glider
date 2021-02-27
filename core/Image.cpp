@@ -140,7 +140,7 @@ void Image::create(int argWidth, int argHeight, bool allocate) {
   }
 }
 
-Color Image::getPixel(int x, int y) {
+Color Image::getPixel(int x, int y) const {
   if (!surf.get()) {
     return Color();
   }

@@ -82,7 +82,7 @@ protected:
 
   void unref();
 
-  Reference lockBase();
+  Reference lockBase() const;
 };
 
 class Reference {
@@ -253,7 +253,7 @@ public:
 
   WeakReferenceTmpl& operator=(WeakReferenceTmpl&&) = default;
 
-  ReferenceTmpl<T> lock() {
+  ReferenceTmpl<T> lock() const {
     return lockBase();
   }
 

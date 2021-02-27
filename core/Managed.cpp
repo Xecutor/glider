@@ -88,7 +88,7 @@ void WeakReference::unref() {
   }
 }
 
-Reference WeakReference::lockBase() {
+Reference WeakReference::lockBase() const {
   if (!weakId) {
     return Reference();
   }

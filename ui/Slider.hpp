@@ -12,7 +12,7 @@ class Slider : public UIObject {
 public:
   using Ref = ReferenceTmpl<Slider>;
 
-  Slider(float argCurValue = 0.0, float argMinValue = 0.0, float argMaxValue = 1.0);
+  Slider(float argCurValue = 0.0f, float argMinValue = 0.0f, float argMaxValue = 1.0f);
 
   void setEventHandler(SliderEventType et, UICallBack cb) {
     sliderCb[ToInt(et)] = cb;

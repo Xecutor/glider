@@ -50,4 +50,17 @@ protected:
   bool drawShadow;
 };
 
+template <class T = std::string>
+std::function<void(const T&)> makeSubscriber(Label::Ref label) {
+  return [wptr = label.getWeak()](const T& value) {
+    if (auto ptr = wptr.lock(); ptr.isAssigned()) {
+      if constexpr (std::is_convertible_v<decltype(value), std::string>) {
+        ptr->setCaption(value);
+      } else {
+        ptr->setCaption(std::to_string(value));
+      }
+    };
+  };
+}
+
 }  // namespace glider::ui
