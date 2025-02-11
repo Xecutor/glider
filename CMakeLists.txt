@@ -14,7 +14,7 @@ endif()
 
 set(OpenGL_GL_PREFERENCE "GLVND")
 
-add_subdirectory(dependencies)
+add_subdirectory(deps)
 
 find_package(SDL2 REQUIRED)
 find_package(OpenGL REQUIRED)
