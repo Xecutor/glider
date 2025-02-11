@@ -654,10 +654,12 @@ typedef unsigned char uchar;
 typedef unsigned short ushort;
 typedef unsigned int uint;
 
-inline void customformat(kst::FormatBuffer& buf, const Pos& pos, int w, int p) {
+}  // namespace glider
+
+namespace kst {
+inline void customformat(kst::FormatBuffer& buf, const glider::Pos& pos, int w, int p) {
   char charBuf[128];
   int len = snprintf(charBuf, sizeof(charBuf), "%f,%f", pos.x, pos.y);
   buf.Append(charBuf, len);
 }
-
-}  // namespace glider
+}

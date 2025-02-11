@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.10)
 
 set(tests_data_dir ${CMAKE_CURRENT_SOURCE_DIR}/data)
 

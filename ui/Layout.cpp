@@ -4,8 +4,12 @@
 
 #include "UIContainer.hpp"
 
+namespace kst{
+
 void customformat(kst::FormatBuffer& buf, const std::string_view& val, int w, int p) {
   buf.Append(val.data(), val.size());
+}
+
 }
 
 namespace glider::ui {
