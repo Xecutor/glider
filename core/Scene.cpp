@@ -8,7 +8,7 @@ void Scene::draw() {
   }
 }
 
-DrawableObjectId Scene::addObject(Drawable* argObject) {
+DrawableObjectId Scene::addObject(Drawable::Ref argObject) {
   objects.push_back(argObject);
   return --objects.end();
 }

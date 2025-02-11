@@ -125,7 +125,11 @@ struct Posi {
   Posi(const U& argOther) : x(argOther.x), y(argOther.y) {
   }
   bool isZero() const {
-    return x == 0.0f && y == 0.0f;
+    return x == 0 && y == 0;
+  }
+
+  Pos toFloat() const {
+    return Pos(float(x), float(y));
   }
 
   template <class U>
@@ -222,6 +226,7 @@ struct Rect {
   bool isInside(const Pos& argPos) const {
     return argPos.x > pos.x && argPos.y > pos.y && argPos.x < pos.x + size.x && argPos.y < pos.y + size.y;
   }
+
   void pushQuad(std::vector<Pos>& v) const {
     v.push_back(tl());
     v.push_back(tr());
@@ -303,6 +308,15 @@ struct Recti {
     v.push_back(br());
     v.push_back(bl());
   }
+
+  Recti operator*(T v) {
+    return {pos*v, size*v};
+  }
+
+  Recti operator/(T v) {
+    return {pos/v, size/v};
+  }
+  
   struct Iterator {
     Posi<T> pos;
     Posi<T> end;
@@ -656,7 +670,7 @@ typedef unsigned int uint;
 
 }  // namespace glider
 
-namespace kst {
+namespace kst{
 inline void customformat(kst::FormatBuffer& buf, const glider::Pos& pos, int w, int p) {
   char charBuf[128];
   int len = snprintf(charBuf, sizeof(charBuf), "%f,%f", pos.x, pos.y);

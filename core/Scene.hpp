@@ -12,7 +12,7 @@ typedef DrawableObjectsList::iterator DrawableObjectId;
 class Scene : public Drawable {
 public:
   void draw();
-  DrawableObjectId addObject(Drawable* argObject);
+  DrawableObjectId addObject(Drawable::Ref argObject);
   void removeObject(DrawableObjectId id);
   void clear();
   DrawableObjectId begin() {
