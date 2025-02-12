@@ -20,17 +20,9 @@ find_package(SDL2 REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 
-find_library(SDL2_IMAGE_LIB SDL2_image)
-find_library(SDL2_TTF_LIB SDL2_ttf)
+find_package(SDL2_image CONFIG REQUIRED)
+find_package(SDL2_ttf CONFIG REQUIRED)
 find_package(unofficial-brotli CONFIG REQUIRED)
-
-if(NOT SDL2_IMAGE_LIB)
-  message(FATAL "SDL2_image not found")
-endif()
-
-if(NOT SDL2_TTF_LIB)
-  message(FATAL "SDL2_ttf not found")
-endif()
 
 if(UNIX)
   find_library(FREETYPE_LIB freetype)
@@ -68,12 +60,12 @@ file (GLOB UI_FILES ui/*.cpp )
 cmake_policy(SET CMP0003 NEW)
 add_library(glider-core STATIC ${CORE_FILES})
 
-target_link_libraries(glider-core PUBLIC
+target_link_libraries(glider-core
   SDL2::SDL2
   SDL2::SDL2main
   GLEW::GLEW
-  ${SDL2_IMAGE_LIB}
-  ${SDL2_TTF_LIB}
+   $<IF:$<TARGET_EXISTS:SDL2_image::SDL2_image>,SDL2_image::SDL2_image,SDL2_image::SDL2_image-static>
+  $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_image::SDL2_ttf-static>
   ${EXTRA_LIBS}
   kst
   OpenGL::GL)
